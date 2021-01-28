@@ -44,7 +44,10 @@ export class ErrorFilter {
     const status = exception.getStatus();
 
     const { method, originalUrl } = request;
-    const message = exception['message'] || exception['response'].message || exception['response'].data.message;
+    const message =
+      exception['message'] ||
+      exception['response'].message ||
+      exception['response'].data.message;
 
     const data = {
       action: 'After',
@@ -56,12 +59,9 @@ export class ErrorFilter {
 
     Logger.error(JSON.stringify(data));
 
-    response
-      .status(status)
-      .json({
-        code: status,
-        msg: message,
-      });
+    response.status(status).json({
+      code: status,
+      msg: message,
+    });
   }
 }
-

@@ -5,6 +5,7 @@ import { PostmanResolver } from './postman.resolver';
 
 @Module({
   controllers: [PostmanController],
-  providers: [PostmanService, PostmanResolver]
+  providers: [PostmanService, PostmanResolver],
 })
-export class PostmanModule {}
+export class PostmanModule {
+}

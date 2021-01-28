@@ -3,14 +3,14 @@ import * as fs from 'fs';
 
 @Controller('postman')
 export class PostmanController {
-  constructor() {
-  }
-
   @Post('jsonToMd')
   async jsonToMd(@Body() data: any) {
-    const contents: string = await fs.readFileSync('./fileUpload/Github.postman_collection.json', {
-      encoding: 'utf8',
-    });
+    const contents: string = await fs.readFileSync(
+      './fileUpload/Github.postman_collection.json',
+      {
+        encoding: 'utf8',
+      },
+    );
     const { info, item } = JSON.parse(contents);
     const { name } = info;
     const req = filterRequest([name], [], item);
@@ -19,7 +19,7 @@ export class PostmanController {
 }
 
 function filterRequest(dir: Array<string>, data: Array<any>, item: Array<any>) {
-  for (let i in item) {
+  for (const i in item) {
     if (item[i].request) {
       data.push(Object.assign({ dir }, mappingFiled(item[i])));
     }
@@ -49,7 +49,7 @@ function mappingFiled(data) {
 
 function spliceApi(path: any) {
   let api = '';
-  for (let i in path) {
+  for (const i in path) {
     api += `/${path[i]}`;
   }
   return api;

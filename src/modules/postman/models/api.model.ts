@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class APISchema {
-  @Field(type => ID)
+  @Field((type) => ID)
   id: number;
 
   @Field()
