@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type APISchema {
+  id: ID!
+  method: String!
+  api: String!
+  header: String!
+  path: String!
+  query: String!
+  body: String!
+}
+
+type Query {
+  findById(id: Float!): APISchema!
+}
