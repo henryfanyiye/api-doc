@@ -7,23 +7,23 @@ export class OutputSchema {
   id: string;
 
   @Field({ nullable: true })
-  name?: string;
+  name: string;
 
   @Field({ nullable: true })
-  method?: string;
+  method: string;
 
   @Field({ nullable: true })
-  api?: string;
+  api: string;
 
   @Field(type => [OObjModel], { nullable: 'itemsAndList' })
-  header?: OObjModel[];
+  header: OObjModel[];
 
   @Field(type => [OObjModel], { nullable: 'itemsAndList' })
-  path?: OObjModel[];
+  path: OObjModel[];
 
   @Field(type => [OObjModel], { nullable: 'itemsAndList' })
-  query?: OObjModel[];
+  query: OObjModel[];
 
   @Field(type => [OObjModel], { nullable: 'itemsAndList' })
-  body?: OObjModel[];
+  body: OObjModel[];
 }

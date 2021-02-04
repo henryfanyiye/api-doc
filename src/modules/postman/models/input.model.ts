@@ -1,7 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-
 import { IObjModel } from './obj.model';
-
 
 @InputType()
 export class InputSchema {
@@ -15,14 +13,14 @@ export class InputSchema {
   api: string;
 
   @Field(type => [IObjModel], { nullable: 'itemsAndList' })
-  header?: IObjModel[];
+  header: IObjModel[];
 
   @Field(type => [IObjModel], { nullable: 'itemsAndList' })
-  path?: IObjModel[];
+  path: IObjModel[];
 
   @Field(type => [IObjModel], { nullable: 'itemsAndList' })
-  query?: IObjModel[];
+  query: IObjModel[];
 
   @Field(type => [IObjModel], { nullable: 'itemsAndList' })
-  body?: IObjModel[];
+  body: IObjModel[];
 }
