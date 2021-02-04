@@ -1,18 +1,21 @@
-import { NotFoundException } from '@nestjs/common';
-import { Resolver, Query, Args } from '@nestjs/graphql';
-import { APISchema } from './models/api.model';
+import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { QuerySchema } from './models/query.model';
+import { InputSchema } from './models/input.model';
+import { OutputSchema } from './models/output.model';
 import { PostmanService } from './postman.service';
 
-@Resolver((of) => APISchema)
+@Resolver(() => OutputSchema)
 export class PostmanResolver {
-  constructor(private readonly postmanService: PostmanService) {}
+  constructor(private readonly postmanService: PostmanService) {
+  }
 
-  @Query((returns) => APISchema)
-  async findById(@Args('id') id: number): Promise<APISchema> {
-    const data = await this.postmanService.findById(id);
-    if (!data) {
-      throw new NotFoundException(id);
-    }
-    return data;
+  @Query(() => [OutputSchema])
+  async find(@Args('query') query: QuerySchema) {
+    return await this.postmanService.find(query);
+  }
+
+  @Mutation(() => OutputSchema)
+  async create(@Args('apiDoc') apiDoc: InputSchema) {
+    return await this.postmanService.create(apiDoc);
   }
 }
