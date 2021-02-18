@@ -10,4 +10,10 @@ export class QuerySchema {
 
   @Field({ nullable: true })
   api: string;
+
+  @Field({ nullable: true })
+  page: number;
+
+  @Field({ nullable: true })
+  limit: number;
 }

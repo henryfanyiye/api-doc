@@ -21,6 +21,6 @@ export class InputSchema {
   @Field(type => [IObjModel], { nullable: 'itemsAndList' })
   query: IObjModel[];
 
-  @Field(type => [IObjModel], { nullable: 'itemsAndList' })
-  body: IObjModel[];
+  @Field({ nullable: true })
+  body: string;
 }

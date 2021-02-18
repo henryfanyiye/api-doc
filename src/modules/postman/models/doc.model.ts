@@ -2,8 +2,8 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { OObjModel } from './obj.model';
 
 @ObjectType()
-export class OutputSchema {
-  @Field()
+export class DocSchema {
+  @Field({ nullable: true })
   id: string;
 
   @Field({ nullable: true })
@@ -24,6 +24,6 @@ export class OutputSchema {
   @Field(type => [OObjModel], { nullable: 'itemsAndList' })
   query: OObjModel[];
 
-  @Field(type => [OObjModel], { nullable: 'itemsAndList' })
-  body: OObjModel[];
+  @Field({ nullable: true })
+  body: string;
 }

@@ -15,9 +15,12 @@ export class PostmanService {
   ) {
   }
 
+  async count(query: QuerySchema) {
+    return await this.postmanRepository.count(query);
+  }
 
-  async find(query: QuerySchema) {
-    return await this.postmanRepository.find(query);
+  async find(query: QuerySchema, skip: number, limit: number) {
+    return await this.postmanRepository.find({ where: query, skip, take: limit });
   }
 
   async create(input: InputSchema): Promise<Postman> {
