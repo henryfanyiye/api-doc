@@ -6,12 +6,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
-import { PostmanController } from '../postman/postman.controller';
+import { PostmanService } from '../postman/postman.service';
 
 @Controller('file')
 export class FileController {
   constructor(
-    private readonly postmanController: PostmanController,
+    private readonly postmanService: PostmanService,
   ) {
   }
 
@@ -22,7 +22,7 @@ export class FileController {
     await fs.readFileSync(path, {
       encoding: 'utf8',
     });
-    await this.postmanController.mappingAndInsert(path);
+    await this.postmanService.mappingAndInsert(path);
     await fs.unlinkSync(path);
     return;
   }
