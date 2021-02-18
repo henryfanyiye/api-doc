@@ -1,8 +1,18 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import * as fs from 'fs';
+import * as async from 'async';
+
+import { PostmanService } from './postman.service';
+
+import { filterRequest } from '../../lib/helper';
 
 @Controller('postman')
 export class PostmanController {
+  constructor(
+    private readonly postmanService: PostmanService,
+  ) {
+  }
+
   @Post('jsonToMd')
   async jsonToMd(@Body() data: any) {
     const contents: string = await fs.readFileSync(
@@ -13,44 +23,24 @@ export class PostmanController {
     );
     const { info, item } = JSON.parse(contents);
     const { name } = info;
-    const req = filterRequest([name], [], item);
-    return req;
+    return filterRequest([name], [], item);
   }
-}
 
-function filterRequest(dir: Array<string>, data: Array<any>, item: Array<any>) {
-  for (const i in item) {
-    if (item[i].request) {
-      data.push(Object.assign({ dir }, mappingFiled(item[i])));
-    }
-    if (item[i].item) {
-      const dirN = [...dir];
-      dirN.push(item[i].name);
-      filterRequest(dirN, data, item[i].item);
-    }
+  async mappingAndInsert(filePath: string) {
+    const contents: string = await fs.readFileSync(
+      filePath,
+      {
+        encoding: 'utf8',
+      },
+    );
+    const { info, item } = JSON.parse(contents);
+    const { name } = info;
+    const data = filterRequest([name], [], item);
+
+    return await async.eachLimit(data, 1, async (item, cb) => {
+      await this.postmanService.findOneAndUpdate(item);
+      cb();
+    });
+
   }
-  return data;
-}
-
-function mappingFiled(data) {
-  const { name, request } = data;
-  const { method, header, url, body } = request;
-  const { path, variable, query } = url;
-  return {
-    name,
-    method,
-    api: spliceApi(path),
-    header,
-    path: variable ? variable : null,
-    query: query ? query : null,
-    body: body ? body[body.mode] : null,
-  };
-}
-
-function spliceApi(path: any) {
-  let api = '';
-  for (const i in path) {
-    api += `/${path[i]}`;
-  }
-  return api;
 }

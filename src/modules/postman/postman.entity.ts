@@ -3,7 +3,10 @@ import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 @Entity()
 export class Postman {
   @ObjectIdColumn()
-  id: ObjectID;
+  _id: ObjectID;
+
+  @Column()
+  dir: string[];
 
   @Column()
   name: string;

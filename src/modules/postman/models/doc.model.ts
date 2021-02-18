@@ -4,7 +4,7 @@ import { OObjModel } from './obj.model';
 @ObjectType()
 export class DocSchema {
   @Field({ nullable: true })
-  id: string;
+  _id: string;
 
   @Field({ nullable: true })
   name: string;

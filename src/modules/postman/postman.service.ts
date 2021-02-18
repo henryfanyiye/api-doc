@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+
 import { QuerySchema } from './models/query.model';
 import { InputSchema } from './models/input.model';
 import { Postman } from './postman.entity';
@@ -19,11 +19,26 @@ export class PostmanService {
     return await this.postmanRepository.count(query);
   }
 
-  async find(query: QuerySchema, skip: number, limit: number) {
+  async find(query: QuerySchema, skip: number, limit: number): Promise<Postman[]> {
     return await this.postmanRepository.find({ where: query, skip, take: limit });
   }
 
   async create(input: InputSchema): Promise<Postman> {
-    return this.postmanRepository.save(Object.assign({ _id: uuidv4() }, input));
+    return this.postmanRepository.save(input);
   }
+
+  async findOneAndUpdate(input) {
+    const res = await this.postmanRepository.find({
+      dir: input.dir,
+      name: input.name,
+      method: input.method,
+      api: input.api,
+    });
+    if (res.length > 0) {
+      return await this.postmanRepository.update(res[0]._id, input);
+    } else {
+      return await this.postmanRepository.save(input);
+    }
+  }
+
 }

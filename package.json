@@ -27,7 +27,10 @@
     "@nestjs/graphql": "^7.9.6",
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/typeorm": "^7.1.5",
+    "@types/async": "^3.2.5",
+    "@types/mongodb": "^3.6.7",
     "apollo-server-express": "^2.19.2",
+    "async": "^3.2.0",
     "graphql": "^15.4.0",
     "graphql-tools": "^7.0.2",
     "mongodb": "^3.6.3",
@@ -35,8 +38,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
-    "typeorm": "^0.2.30",
-    "uuid": "^8.3.2"
+    "typeorm": "^0.2.30"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.5.1",
