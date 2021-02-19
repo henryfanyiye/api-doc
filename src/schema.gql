@@ -53,3 +53,24 @@ input UserQueryModel {
   password: String
   email: String
 }
+
+type Mutation {
+  create(apiDoc: CreateModel!): ApiModel!
+}
+
+input CreateModel {
+  name: String!
+  method: String!
+  api: String!
+  header: [IObjModel]
+  path: [IObjModel]
+  query: [IObjModel]
+  body: String
+  dir: [String!]
+}
+
+input IObjModel {
+  key: String
+  value: String
+  type: String
+}
