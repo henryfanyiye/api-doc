@@ -1,20 +1,21 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { ObjectId } from 'mongodb';
 
-import { QueryModel } from './models/query.model';
+import { ApiQueryModel } from './models/apiQuery.model';
 import { CreateModel } from './models/create.model';
-import { DocModel } from './models/doc.model';
-import { QueryOutSchema } from './models/queryOut.model';
+import { ApiModel } from './models/api.model';
+import { ApisModel } from './models/apis.model';
 import { PostmanService } from './postman.service';
 import { stringToObjectId } from '../../lib/helper';
 
-@Resolver(() => DocModel)
+@Resolver(() => ApiModel)
 export class PostmanResolver {
-  constructor(private readonly postmanService: PostmanService) {
+  constructor(
+    private readonly postmanService: PostmanService,
+  ) {
   }
 
-  @Query(() => [QueryOutSchema])
-  async find(@Args('query') query: QueryModel) {
+  @Query(() => [ApisModel])
+  async findAPI(@Args('query') query: ApiQueryModel) {
     const { _id, page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
     let arg: any;
@@ -36,7 +37,7 @@ export class PostmanResolver {
     return [{ count, page, limit, data }];
   }
 
-  @Mutation(() => DocModel)
+  @Mutation(() => ApiModel)
   async create(@Args('apiDoc') apiDoc: CreateModel) {
     return await this.postmanService.create(apiDoc);
   }

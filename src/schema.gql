@@ -8,7 +8,7 @@ type OObjModel {
   type: String
 }
 
-type DocModel {
+type ApiModel {
   _id: String
   name: String
   method: String
@@ -20,18 +20,26 @@ type DocModel {
   dir: [String!]
 }
 
-type QueryOutSchema {
+type ApisModel {
   count: Float!
   page: Float!
   limit: Float!
-  data: [DocModel]
+  data: [ApiModel]
+}
+
+type UserModel {
+  _id: String
+  username: String
+  password: String
+  email: String
 }
 
 type Query {
-  find(query: QueryModel!): [QueryOutSchema!]!
+  findAPI(query: ApiQueryModel!): [ApisModel!]!
+  findUser(query: UserQueryModel!): [UserModel!]!
 }
 
-input QueryModel {
+input ApiQueryModel {
   _id: String
   method: String
   api: String
@@ -39,23 +47,9 @@ input QueryModel {
   limit: Float
 }
 
-type Mutation {
-  create(apiDoc: CreateModel!): DocModel!
-}
-
-input CreateModel {
-  name: String!
-  method: String!
-  api: String!
-  header: [IObjModel]
-  path: [IObjModel]
-  query: [IObjModel]
-  body: String
-  dir: [String!]
-}
-
-input IObjModel {
-  key: String
-  value: String
-  type: String
+input UserQueryModel {
+  _id: String
+  username: String
+  password: String
+  email: String
 }

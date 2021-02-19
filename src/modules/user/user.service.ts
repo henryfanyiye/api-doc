@@ -5,7 +5,7 @@ import { MongoRepository } from 'typeorm';
 import { User } from './entity/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { DetailDto } from './dto/detail.dto';
+import { UserQueryModel } from './models/userQuery.model';
 
 @Injectable()
 export class UserService {
@@ -34,12 +34,7 @@ export class UserService {
     }
   }
 
-  async detail(userId: any): Promise<DetailDto> {
-    const res = await this.userRepository.findOne(userId);
-    if (res) {
-      return res;
-    } else {
-      throw new BadRequestException('UserId is not exist.');
-    }
+  async find(query: UserQueryModel): Promise<User[]> {
+    return await this.userRepository.find({ where: query });
   }
 }

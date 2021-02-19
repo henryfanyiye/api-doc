@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import * as async from 'async';
 
-import { QueryModel } from './models/query.model';
+import { ApiQueryModel } from './models/apiQuery.model';
 import { CreateModel } from './models/create.model';
 import { Postman } from './entity/postman.entity';
 import fs from 'fs';
@@ -18,11 +18,11 @@ export class PostmanService {
   ) {
   }
 
-  async count(query: QueryModel) {
+  async count(query: ApiQueryModel) {
     return await this.postmanRepository.count(query);
   }
 
-  async find(query: QueryModel, skip: number, limit: number): Promise<Postman[]> {
+  async find(query: ApiQueryModel, skip: number, limit: number): Promise<Postman[]> {
     return await this.postmanRepository.find({ where: query, skip, take: limit });
   }
 

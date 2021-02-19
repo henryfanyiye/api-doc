@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class QueryModel {
+export class ApiQueryModel {
   @Field({ nullable: true })
   _id: string;
 

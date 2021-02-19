@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DocModel } from './doc.model';
+import { ApiModel } from './api.model';
 
 @ObjectType()
-export class QueryOutSchema {
+export class ApisModel {
   @Field()
   count: number;
 
@@ -12,6 +12,6 @@ export class QueryOutSchema {
   @Field()
   limit: number;
 
-  @Field(type => [DocModel], { nullable: 'itemsAndList' })
-  data: DocModel[];
+  @Field(type => [ApiModel], { nullable: 'itemsAndList' })
+  data: ApiModel[];
 }
