@@ -23,4 +23,7 @@ export class InputSchema {
 
   @Field({ nullable: true })
   body: string;
+
+  @Field(type => [String], { nullable: true })
+  dir: string[];
 }

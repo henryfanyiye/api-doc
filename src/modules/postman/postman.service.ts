@@ -5,7 +5,7 @@ import * as async from 'async';
 
 import { QuerySchema } from './models/query.model';
 import { InputSchema } from './models/input.model';
-import { Postman } from './postman.entity';
+import { Postman } from './models/postman.entity';
 import fs from 'fs';
 import { filterRequest } from '../../lib/helper';
 

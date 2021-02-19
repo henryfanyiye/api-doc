@@ -5,7 +5,7 @@ import { diskStorage } from 'multer';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Postman } from '../postman/postman.entity';
+import { Postman } from '../postman/models/postman.entity';
 import { PostmanService } from '../postman/postman.service';
 
 @Module({

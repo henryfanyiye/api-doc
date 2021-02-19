@@ -24,6 +24,8 @@ export class PostmanResolver {
       const id = ObjectId.createFromHexString(_id);
       delete query._id;
       arg = Object.assign({ _id: id }, query);
+    } else {
+      arg = query;
     }
 
     const count = await this.postmanService.count(arg);

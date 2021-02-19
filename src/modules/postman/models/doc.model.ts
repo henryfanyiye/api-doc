@@ -26,4 +26,7 @@ export class DocSchema {
 
   @Field({ nullable: true })
   body: string;
+
+  @Field(type => [String], { nullable: true })
+  dir: string[];
 }
