@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { DocSchema } from './doc.model';
+import { DocModel } from './doc.model';
 
 @ObjectType()
 export class QueryOutSchema {
@@ -12,6 +12,6 @@ export class QueryOutSchema {
   @Field()
   limit: number;
 
-  @Field(type => [DocSchema], { nullable: 'itemsAndList' })
-  data: DocSchema[];
+  @Field(type => [DocModel], { nullable: 'itemsAndList' })
+  data: DocModel[];
 }

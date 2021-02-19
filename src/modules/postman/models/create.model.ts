@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IObjModel } from './obj.model';
 
 @InputType()
-export class InputSchema {
+export class CreateModel {
   @Field()
   name: string;
 

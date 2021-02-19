@@ -2,7 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { OObjModel } from './obj.model';
 
 @ObjectType()
-export class DocSchema {
+export class DocModel {
   @Field({ nullable: true })
   _id: string;
 

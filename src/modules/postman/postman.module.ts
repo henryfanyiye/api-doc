@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostmanController } from './postman.controller';
 import { PostmanService } from './postman.service';
 import { PostmanResolver } from './postman.resolver';
-import { Postman } from './models/postman.entity';
+import { Postman } from './entity/postman.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Postman])],

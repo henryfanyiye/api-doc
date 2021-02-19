@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import * as async from 'async';
 
-import { QuerySchema } from './models/query.model';
-import { InputSchema } from './models/input.model';
-import { Postman } from './models/postman.entity';
+import { QueryModel } from './models/query.model';
+import { CreateModel } from './models/create.model';
+import { Postman } from './entity/postman.entity';
 import fs from 'fs';
 import { filterRequest } from '../../lib/helper';
 
@@ -18,15 +18,15 @@ export class PostmanService {
   ) {
   }
 
-  async count(query: QuerySchema) {
+  async count(query: QueryModel) {
     return await this.postmanRepository.count(query);
   }
 
-  async find(query: QuerySchema, skip: number, limit: number): Promise<Postman[]> {
+  async find(query: QueryModel, skip: number, limit: number): Promise<Postman[]> {
     return await this.postmanRepository.find({ where: query, skip, take: limit });
   }
 
-  async create(input: InputSchema): Promise<Postman> {
+  async create(input: CreateModel): Promise<Postman> {
     return this.postmanRepository.save(input);
   }
 

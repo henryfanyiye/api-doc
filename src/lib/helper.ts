@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 /**
  * 逐层解析postman.json，提取api
  */
@@ -42,4 +44,8 @@ export function spliceApi(path: any) {
     api += `/${path[i]}`;
   }
   return api;
+}
+
+export function stringToObjectId(value: string) {
+  return ObjectId.createFromHexString(value);
 }

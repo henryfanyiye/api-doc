@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class QuerySchema {
+export class QueryModel {
   @Field({ nullable: true })
   _id: string;
 

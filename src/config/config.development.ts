@@ -5,6 +5,7 @@ export default () => ({
     host: 'localhost',
     database: 'api-doc',
     synchronize: true,
-    entities: [__dirname + '/../modules/**/*.entity{.ts,.js}'],
+    entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
+    useUnifiedTopology: true
   },
 })

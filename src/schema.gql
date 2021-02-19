@@ -1,0 +1,61 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type OObjModel {
+  key: String
+  value: String
+  type: String
+}
+
+type DocModel {
+  _id: String
+  name: String
+  method: String
+  api: String
+  header: [OObjModel]
+  path: [OObjModel]
+  query: [OObjModel]
+  body: String
+  dir: [String!]
+}
+
+type QueryOutSchema {
+  count: Float!
+  page: Float!
+  limit: Float!
+  data: [DocModel]
+}
+
+type Query {
+  find(query: QueryModel!): [QueryOutSchema!]!
+}
+
+input QueryModel {
+  _id: String
+  method: String
+  api: String
+  page: Float
+  limit: Float
+}
+
+type Mutation {
+  create(apiDoc: CreateModel!): DocModel!
+}
+
+input CreateModel {
+  name: String!
+  method: String!
+  api: String!
+  header: [IObjModel]
+  path: [IObjModel]
+  query: [IObjModel]
+  body: String
+  dir: [String!]
+}
+
+input IObjModel {
+  key: String
+  value: String
+  type: String
+}

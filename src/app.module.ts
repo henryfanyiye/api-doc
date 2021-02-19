@@ -13,6 +13,7 @@ import { ErrorFilter } from './filter/error.filter';
 
 import { PostmanModule } from './modules/postman/postman.module';
 import { FileModule } from './modules/file/file.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -33,8 +34,9 @@ import { FileModule } from './modules/file/file.module';
       inject: [ConfigService], // 记得注入服务，不然useFactory函数中获取不到ConfigService
     }),
     // Modules
-    PostmanModule,
     FileModule,
+    PostmanModule,
+    UserModule,
   ],
   providers: [
     // Response格式化
