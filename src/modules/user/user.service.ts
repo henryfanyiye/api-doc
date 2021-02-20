@@ -37,4 +37,8 @@ export class UserService {
   async find(query: UserQueryModel): Promise<User[]> {
     return await this.userRepository.find({ where: query });
   }
+
+  async detail(id: any): Promise<User> {
+    return await this.userRepository.findOne(id);
+  }
 }
