@@ -1,5 +1,3 @@
-import { jwtConstants } from '../modules/auth/constants';
-
 export default () => ({
   // mongodb
   mongodb: {
@@ -16,7 +14,7 @@ export default () => ({
     },
   },
   jwt: {
-    secret: jwtConstants.secret,
+    secret: 'secretKey',
     signOptions: {
       expiresIn: 3600,
     },
