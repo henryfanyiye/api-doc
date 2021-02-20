@@ -3,7 +3,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './guard/jwt.strategy';
 
 @Global()
 @Module({
@@ -17,7 +16,6 @@ import { JwtStrategy } from './guard/jwt.strategy';
   ],
   providers: [
     AuthService,
-    JwtStrategy,
   ],
   exports: [
     AuthService,

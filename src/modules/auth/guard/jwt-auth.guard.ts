@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
@@ -6,33 +7,50 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorator/jwt.decorator';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
 
-  constructor(private reflector: Reflector) {
+  constructor(
+    private reflector: Reflector,
+    private readonly authService: AuthService,
+  ) {
     super();
   }
 
-  canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
+  async canActivate(context: ExecutionContext) {
+
+    // Whether to skip authentication
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
       return true;
     }
 
-    return super.canActivate(context);
-  }
+    // Get the token from header
+    let authHeader: string = null;
 
-  handleRequest(err, user, info) {
-    // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user) {
-      throw err || new UnauthorizedException();
-    }
-    return user;
+    if (context['contextType'] === 'http') authHeader = context.switchToHttp().getRequest().headers.authorization as string;
+
+    if (context['contextType'] === 'graphql') authHeader = context.getArgs()[2].req.headers.authorization as string;
+
+    // Check the token is exist
+    if (!authHeader) throw new BadRequestException('Authorization header not found.');
+
+    const [type, token] = authHeader.split(' ');
+
+    // Check the token type
+    if (type !== 'Bearer') throw new BadRequestException(`Authentication type \'Bearer\' required. Found \'${type}\'`);
+
+    // Validate token
+    const validationResult = await this.authService.validateToken(token);
+
+    if (validationResult === true) return true;
+
+    throw new UnauthorizedException(validationResult);
   }
 }

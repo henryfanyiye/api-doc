@@ -10,11 +10,20 @@ export class AuthService {
   ) {
   }
 
-  async createToken(payload: any) {
+  async generateToken(payload: any) {
     const accessToken = await this.jwtService.sign(payload);
     return {
       expiresIn: this.configServer.get('jwt').signOptions.expiresIn,
       accessToken,
     };
+  }
+
+  async validateToken(token: string) {
+    try {
+      await this.jwtService.verify(token);
+      return true;
+    } catch (error) {
+      return error.name;
+    }
   }
 }

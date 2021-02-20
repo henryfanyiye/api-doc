@@ -30,7 +30,7 @@ export class UserController {
     @Body() loginDto: LoginDto,
   ) {
     const user = await this.userService.login(loginDto);
-    const res = await this.authService.createToken({ id: objectIdToString(user._id) });
+    const res = await this.authService.generateToken({ id: objectIdToString(user._id) });
     return res;
   }
 

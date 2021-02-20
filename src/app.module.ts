@@ -29,6 +29,8 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
     // 注册Graph
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      installSubscriptionHandlers: true,
+      context: ({ req }) => ({ req }),
     }),
     // Database
     RedisModule.forRootAsync({
