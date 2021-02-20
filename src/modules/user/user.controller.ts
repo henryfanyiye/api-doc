@@ -1,17 +1,22 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { UserService } from './user.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { stringToObjectId } from '../../lib/helper';
+import { objectIdToString, stringToObjectId } from '../../lib/helper';
+import { AuthService } from '../auth/auth.service';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { Public } from '../auth/decorator/jwt.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {
   }
 
+  @Public()
   @Post('register')
   async register(
     @Body() user: RegisterDto,
@@ -19,11 +24,14 @@ export class UserController {
     return this.userService.register(user);
   }
 
+  @Public()
   @Post('login')
   async login(
-    @Body() user: LoginDto,
+    @Body() loginDto: LoginDto,
   ) {
-    return this.userService.login(user);
+    const user = await this.userService.login(loginDto);
+    const res = await this.authService.createToken({ id: objectIdToString(user._id) });
+    return res;
   }
 
   @Get('detail/:id')

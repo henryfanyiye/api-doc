@@ -49,3 +49,7 @@ export function spliceApi(path: any) {
 export function stringToObjectId(value: string) {
   return ObjectId.createFromHexString(value);
 }
+
+export function objectIdToString(value: ObjectId) {
+  return new ObjectId(value).toHexString();
+}
