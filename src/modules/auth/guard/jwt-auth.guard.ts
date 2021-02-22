@@ -39,12 +39,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (context['contextType'] === 'graphql') authHeader = context.getArgs()[2].req.headers.authorization as string;
 
     // Check the token is exist
-    if (!authHeader) throw new BadRequestException('Authorization header not found.');
+    if (!authHeader) throw new UnauthorizedException('Authorization header not found.');
 
     const [type, token] = authHeader.split(' ');
 
     // Check the token type
-    if (type !== 'Bearer') throw new BadRequestException(`Authentication type \'Bearer\' required. Found \'${type}\'`);
+    if (type !== 'Bearer') throw new UnauthorizedException(`Authentication type \'Bearer\' required. Found \'${type}\'`);
 
     // Validate token
     const validationResult = await this.authService.validateToken(token);

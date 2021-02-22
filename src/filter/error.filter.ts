@@ -8,7 +8,11 @@ export class ErrorFilter {
     const request = ctx.getRequest();
     const status = exception.getStatus();
 
-    const { method, originalUrl } = request;
+    const { method, originalUrl } = ctx['contextType'] === 'graphql' ? {
+      method: 'POST',
+      originalUrl: `/graphql - ${ctx.args[3].fieldName}`,
+    } : request;
+
 
     const code = exception['response'] && exception['response'].code ? exception['response'].code : status;
 
@@ -23,9 +27,11 @@ export class ErrorFilter {
 
     Logger.error(JSON.stringify(data));
 
-    response.status(status).json({
-      code: code,
-      msg: message,
-    });
+    if (ctx['contextType'] !== 'graphql') {
+      response.status(status).json({
+        code: code,
+        msg: message,
+      });
+    }
   }
 }

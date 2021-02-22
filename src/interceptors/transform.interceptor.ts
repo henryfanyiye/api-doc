@@ -33,12 +33,11 @@ export class TransformInterceptor<T> implements NestInterceptor<T, Response<T>> 
 
         Logger.log(JSON.stringify(afterData));
 
-        res.status(200);
-        return {
+        res.status(200).json({
           code: 0,
           msg: 'Success',
           data: response,
-        };
+        });
       }),
     );
   }
