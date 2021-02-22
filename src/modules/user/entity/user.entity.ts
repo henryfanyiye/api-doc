@@ -1,11 +1,11 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryColumn()
-  uid: number;
+  @PrimaryGeneratedColumn('uuid')
+  uid: string;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -14,15 +14,15 @@ export class User {
   @Column()
   nick_name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column('date')
-  create_time: string;
+  @Column()
+  create_time: Date;
 
-  @Column('date')
-  update_time: string;
+  @Column()
+  update_time: Date;
 
-  @Column('date')
-  last_login_time: string;
+  @Column()
+  last_login_time: Date;
 }

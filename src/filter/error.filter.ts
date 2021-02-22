@@ -9,23 +9,22 @@ export class ErrorFilter {
     const status = exception.getStatus();
 
     const { method, originalUrl } = request;
-    const message =
-      exception['message'] ||
-      exception['response'].message ||
-      exception['response'].data.message;
+
+    const code = exception['response'] && exception['response'].code ? exception['response'].code : status;
+
+    const message = exception['response'] && exception['response'].message ? exception['response'].message : exception['message'];
 
     const data = {
       action: 'After',
       method,
       originalUrl,
       message,
-      error: exception['response'].message || exception['message'],
     };
 
     Logger.error(JSON.stringify(data));
 
     response.status(status).json({
-      code: status,
+      code: code,
       msg: message,
     });
   }

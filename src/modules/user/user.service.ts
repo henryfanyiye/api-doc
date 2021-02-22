@@ -7,6 +7,8 @@ import { User } from './entity/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserQueryModel } from './models/userQuery.model';
+import { CustomErrorException } from '../../lib/error/custom-error.exception';
+import { CustomError } from '../../lib/error/custom.error';
 
 @Injectable()
 export class UserService {
@@ -17,12 +19,12 @@ export class UserService {
   }
 
   async register(user: RegisterDto) {
-    const res = await this.userRepository.findOne({ username: user.username });
-    if (res) {
-      throw new BadRequestException('Username is exist.');
-    } else {
+    try {
       const create_time = moment().format('YYYY-MM-DD HH:mm:SS');
+      user.nick_name = user.nick_name || user.username;
       return await this.userRepository.insert(Object.assign({ create_time, update_time: create_time }, user));
+    } catch (e) {
+      throw new BadRequestException(e.message);
     }
   }
 
@@ -31,7 +33,7 @@ export class UserService {
     if (res) {
       return res;
     } else {
-      throw new BadRequestException('Username or password error.');
+      throw new CustomErrorException(CustomError.UserNameOrPasswordError);
     }
   }
 
@@ -40,6 +42,11 @@ export class UserService {
   }
 
   async detail(id: any): Promise<User> {
-    return await this.userRepository.findOne(id);
+    const res = await this.userRepository.findOne(id);
+    if (res) {
+      return res;
+    } else {
+      throw new CustomErrorException(CustomError.InvalidUserId);
+    }
   }
 }
