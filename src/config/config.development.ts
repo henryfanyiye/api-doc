@@ -1,3 +1,6 @@
+import { Postman } from '../modules/postman/entity/postman.entity';
+import { User } from '../modules/user/entity/user.entity';
+
 export default () => ({
   // mongodb
   mongodb: {
@@ -5,13 +8,14 @@ export default () => ({
     host: 'localhost',
     database: 'api-doc',
     synchronize: true,
-    entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
+    // entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
+    entities: [Postman],
     useUnifiedTopology: true,
   },
-  redis: {
-    config: {
-      url: 'redis://localhost:6379',
-    },
+  sqlite: {
+    type: 'sqlite',
+    entities: [User],
+    database: __dirname + '/../../sqlite/api-doc.db',
   },
   jwt: {
     secret: 'secretKey',

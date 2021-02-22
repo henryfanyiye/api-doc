@@ -1,9 +1,9 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @ObjectIdColumn()
-  _id: ObjectID;
+  @PrimaryColumn()
+  uid: number;
 
   @Column()
   username: string;
@@ -12,5 +12,17 @@ export class User {
   password: string;
 
   @Column()
+  nick_name: string;
+
+  @Column()
   email: string;
+
+  @Column('date')
+  create_time: string;
+
+  @Column('date')
+  update_time: string;
+
+  @Column('date')
+  last_login_time: string;
 }

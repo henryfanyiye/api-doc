@@ -12,9 +12,7 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { ErrorFilter } from './filter/error.filter';
 
 import { PostmanModule } from './modules/postman/postman.module';
-import { FileModule } from './modules/file/file.module';
 import { UserModule } from './modules/user/user.module';
-import { RedisModule } from '@svtslv/nestjs-ioredis';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
 
@@ -33,19 +31,20 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
       context: ({ req }) => ({ req }),
     }),
     // Database
-    RedisModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => config.get('redis'),
-      inject: [ConfigService],
-    }),
     TypeOrmModule.forRootAsync({
+      name: 'mongodb',
       imports: [ConfigModule], // 数据库配置项依赖于ConfigModule，需在此引入
       useFactory: (config: ConfigService) => config.get('mongodb'),
       inject: [ConfigService], // 记得注入服务，不然useFactory函数中获取不到ConfigService
     }),
+    TypeOrmModule.forRootAsync({
+      name: 'sqlite',
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => config.get('sqlite'),
+      inject: [ConfigService],
+    }),
     // Modules
     AuthModule,
-    FileModule,
     PostmanModule,
     UserModule,
   ],

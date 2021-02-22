@@ -6,7 +6,7 @@ import { PostmanResolver } from './postman.resolver';
 import { Postman } from './entity/postman.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Postman])],
+  imports: [TypeOrmModule.forFeature([Postman], 'mongodb')],
   controllers: [PostmanController],
   providers: [PostmanService, PostmanResolver],
 })

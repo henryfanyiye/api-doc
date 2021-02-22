@@ -13,7 +13,7 @@ import { filterRequest } from '../../lib/helper';
 export class PostmanService {
 
   constructor(
-    @InjectRepository(Postman)
+    @InjectRepository(Postman, 'mongodb')
     private readonly postmanRepository: MongoRepository<Postman>,
   ) {
   }
