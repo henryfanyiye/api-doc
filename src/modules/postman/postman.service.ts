@@ -1,47 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MongoRepository } from 'typeorm';
-import * as async from 'async';
-
-import { ApiQueryModel } from './models/apiQuery.model';
-import { CreateModel } from './models/create.model';
-import { Postman } from './entity/postman.entity';
+import { Repository } from 'typeorm';
 import fs from 'fs';
-import { filterRequest } from '../../lib/helper';
+
+import { Project } from './entity/project.entity';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
+import { ProjectCatalog } from './entity/project-catalog.entity';
 
 @Injectable()
 export class PostmanService {
 
   constructor(
-    @InjectRepository(Postman, 'mongodb')
-    private readonly postmanRepository: MongoRepository<Postman>,
+    @InjectRepository(Project, 'sqlite')
+    private readonly projectRepository: Repository<Project>,
+    @InjectRepository(ProjectCatalog, 'sqlite')
+    private readonly catalogRepository: Repository<ProjectCatalog>,
   ) {
   }
 
-  async count(query: ApiQueryModel) {
-    return await this.postmanRepository.count(query);
+  async createProject(input: CreateProjectDto) {
+    return await this.projectRepository.insert(input);
   }
 
-  async find(query: ApiQueryModel, skip: number, limit: number): Promise<Postman[]> {
-    return await this.postmanRepository.find({ where: query, skip, take: limit });
-  }
-
-  async create(input: CreateModel): Promise<Postman> {
-    return this.postmanRepository.save(input);
-  }
-
-  async findOneAndUpdate(input) {
-    const res = await this.postmanRepository.find({
-      dir: input.dir,
-      name: input.name,
-      method: input.method,
-      api: input.api,
-    });
-    if (res.length > 0) {
-      return await this.postmanRepository.update(res[0]._id, input);
-    } else {
-      return await this.postmanRepository.save(input);
-    }
+  async createCatalog(input: CreateProjectCatalogDto) {
+    return await this.catalogRepository.insert(input);
   }
 
   async mappingAndInsert(filePath: string) {
@@ -53,12 +36,12 @@ export class PostmanService {
     );
     const { info, item } = JSON.parse(contents);
     const { name } = info;
-    const data = filterRequest([name], [], item);
 
-    return await async.eachLimit(data, 1, async (item, cb) => {
-      await this.findOneAndUpdate(item);
-      cb();
-    });
+    return;
+    // return await async.eachLimit(data, 1, async (item, cb) => {
+    //   await this.findOneAndUpdate(item);
+    //   cb();
+    // });
 
   }
 

@@ -3,7 +3,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import fs from 'fs';
 
 import { PostmanService } from './postman.service';
-import { CreateDto } from './dto/create.dto';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 
 @Controller('postman')
 export class PostmanController {
@@ -24,10 +25,17 @@ export class PostmanController {
     return;
   }
 
-  @Post('api/add')
-  async createNewApi(
-    @Body() createDto: CreateDto,
+  @Post('project/add')
+  async createProject(
+    @Body() input: CreateProjectDto,
   ) {
-    return this.postmanService.create(createDto);
+    return await this.postmanService.createProject(input);
+  }
+
+  @Post('project/catalog/add')
+  async createCatalog(
+    @Body() input: CreateProjectCatalogDto,
+  ) {
+    return await this.postmanService.createCatalog(input);
   }
 }

@@ -17,6 +17,29 @@ export function filterRequest(dir: Array<string>, data: Array<any>, item: Array<
   return data;
 }
 
+export function filterCatalog(catalog: Array<any>, index: any, data: any) {
+  for (const i in data) {
+    if (data[i].item) {
+      catalog.push(data[i].name);
+      this.filterCatalog(catalog, index, data[i].item);
+    }
+    if (data[i].request) {
+      catalog.push(data[i].request);
+    }
+  }
+  return catalog;
+}
+
+export function filterItem(catalog: Array<any>, index: any, data: any) {
+  for (const i in data) {
+    if (data[i].item) {
+      catalog.push(data[i].name);
+      this.filterCatalog(catalog, index, data[i].item);
+    }
+  }
+  return catalog;
+}
+
 /**
  * format filed
  */

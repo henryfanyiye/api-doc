@@ -6,7 +6,6 @@ import moment from 'moment';
 import { User } from './entity/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { UserQueryModel } from './models/userQuery.model';
 import { CustomErrorException } from '../../lib/error/custom-error.exception';
 import { CustomError } from '../../lib/error/custom.error';
 
@@ -35,10 +34,6 @@ export class UserService {
     } else {
       throw new CustomErrorException(CustomError.UserNameOrPasswordError);
     }
-  }
-
-  async find(query: UserQueryModel): Promise<User[]> {
-    return await this.userRepository.find({ where: query });
   }
 
   async detail(id: any): Promise<User> {
