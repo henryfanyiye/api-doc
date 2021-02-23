@@ -7,6 +7,7 @@ import { PostmanController } from './postman.controller';
 import { PostmanService } from './postman.service';
 import { Project } from './entity/project.entity';
 import { ProjectCatalog } from './entity/project-catalog.entity';
+import { ProjectItem } from './entity/project-item.entity';
 
 
 @Module({
@@ -24,6 +25,7 @@ import { ProjectCatalog } from './entity/project-catalog.entity';
       [
         Project,
         ProjectCatalog,
+        ProjectItem,
       ],
       'sqlite'),
   ],

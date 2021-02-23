@@ -1,10 +1,12 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import fs from 'fs';
 
 import { PostmanService } from './postman.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
+import { CreateProjectItemDto } from './dto/create-project-item.dto';
+import { Public } from '../auth/decorator/jwt.decorator';
 
 @Controller('postman')
 export class PostmanController {
@@ -32,10 +34,25 @@ export class PostmanController {
     return await this.postmanService.createProject(input);
   }
 
+  @Public()
+  @Get('project/:id')
+  async queryProject(
+    @Param() id: number,
+  ) {
+    return await this.postmanService.queryProject(id);
+  }
+
   @Post('project/catalog/add')
   async createCatalog(
     @Body() input: CreateProjectCatalogDto,
   ) {
     return await this.postmanService.createCatalog(input);
+  }
+
+  @Post('project/item/add')
+  async createItem(
+    @Body() input: CreateProjectItemDto,
+  ) {
+    return await this.postmanService.createItem(input);
   }
 }

@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { ProjectItem } from './project-item.entity';
 
-@Entity()
+@Entity('project_catalog')
 export class ProjectCatalog {
   @PrimaryColumn()
   pcid: number;
@@ -13,5 +14,4 @@ export class ProjectCatalog {
 
   @Column()
   pid: number;
-
 }
