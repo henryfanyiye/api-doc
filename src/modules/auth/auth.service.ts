@@ -17,13 +17,4 @@ export class AuthService {
       accessToken,
     };
   }
-
-  async validateToken(token: string) {
-    try {
-      await this.jwtService.verify(token);
-      return true;
-    } catch (error) {
-      return error.name;
-    }
-  }
 }

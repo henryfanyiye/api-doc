@@ -9,7 +9,7 @@ export class ProjectCatalog {
   @Column()
   catalog_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   parentId: number;
 
   @Column()

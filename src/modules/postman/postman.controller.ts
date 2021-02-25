@@ -6,40 +6,49 @@ import { PostmanService } from './postman.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 import { CreateProjectItemDto } from './dto/create-project-item.dto';
-import { Public } from '../auth/decorator/jwt.decorator';
+import { User } from '../auth/decorator/user.decorator';
+import { UserService } from '../user/user.service';
 
 @Controller('postman')
 export class PostmanController {
   constructor(
     private readonly postmanService: PostmanService,
+    private readonly userService: UserService,
   ) {
   }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file) {
+  async uploadFile(
+    @User() user: any,
+    @UploadedFile() file,
+  ) {
+    const { uid } = user;
     const { filename, path } = file;
     await fs.readFileSync(path, {
       encoding: 'utf8',
     });
-    await this.postmanService.mappingAndInsert(path);
+    await this.postmanService.mappingAndInsert(uid, path);
     await fs.unlinkSync(path);
     return;
   }
 
   @Post('project/add')
   async createProject(
+    @User() user: any,
     @Body() input: CreateProjectDto,
   ) {
-    return await this.postmanService.createProject(input);
+    const { uid } = user;
+    const pid = await this.postmanService.createProject(uid, input);
+    return { pid };
   }
 
-  @Public()
   @Get('project/:id')
   async queryProject(
-    @Param() id: number,
+    @User() user: any,
   ) {
-    return await this.postmanService.queryProject(id);
+    const { uid } = user;
+    return await this.postmanService.queryProject(uid);
   }
 
   @Post('project/catalog/add')

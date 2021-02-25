@@ -11,7 +11,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   nick_name: string;
 
   @Column({ unique: true })
@@ -23,6 +23,6 @@ export class User {
   @Column()
   update_time: Date;
 
-  @Column()
+  @Column({ nullable: true })
   last_login_time: Date;
 }

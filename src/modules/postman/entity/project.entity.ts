@@ -6,9 +6,9 @@ export class Project {
   @PrimaryColumn()
   pid: number;
 
-  @Column()
+  @Column({ nullable: true })
   project_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 }

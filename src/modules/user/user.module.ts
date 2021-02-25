@@ -3,16 +3,23 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-import { PassportModule } from '@nestjs/passport';
+import { UserProject } from './entity/user-project.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User], 'sqlite'),
-    PassportModule,
+    TypeOrmModule.forFeature(
+      [
+        User,
+        UserProject,
+      ],
+      'sqlite',
+    ),
   ],
-  controllers: [UserController],
+  controllers: [
+    UserController,
+  ],
   providers: [
-    UserService
+    UserService,
   ],
 })
 export class UserModule {
