@@ -7,13 +7,11 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { User } from '../auth/decorator/user.decorator';
-import { UserService } from '../user/user.service';
 
 @Controller('postman')
 export class PostmanController {
   constructor(
     private readonly postmanService: PostmanService,
-    private readonly userService: UserService,
   ) {
   }
 

@@ -8,12 +8,18 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { CustomErrorException } from '../../lib/error/custom-error.exception';
 import { CustomError } from '../../lib/error/custom.error';
+import { Project } from '../postman/entity/project.entity';
+import { UserProject } from './entity/user-project.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User, 'sqlite')
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserProject, 'sqlite')
+    private readonly userProjectRepository: Repository<UserProject>,
+    @InjectRepository(Project, 'sqlite')
+    private readonly projectRepository: Repository<Project>,
   ) {
   }
 
@@ -43,5 +49,17 @@ export class UserService {
     } else {
       throw new CustomErrorException(CustomError.InvalidUserId);
     }
+  }
+
+  async queryProjectList(uid: number): Promise<any> {
+    return this.userProjectRepository.createQueryBuilder('user_project')
+      .leftJoinAndSelect(Project, 'project', 'user_project.pid=project.pid')
+      .select([
+        'project.pid as projectId',
+        'project.project_name as projectName',
+        'project.description as desc',
+      ])
+      .where('user_project.uid = :uid', { uid })
+      .getRawMany();
   }
 }

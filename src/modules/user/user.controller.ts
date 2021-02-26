@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthService } from '../auth/auth.service';
 import { Public } from '../auth/decorator/jwt.decorator';
+import { User } from '../auth/decorator/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -44,5 +45,13 @@ export class UserController {
     } else {
       throw new BadRequestException('UserId is not exist.');
     }
+  }
+
+  @Get('project/list')
+  async queryProjectList(
+    @User() user: any,
+  ) {
+    const { uid } = user;
+    return this.userService.queryProjectList(uid);
   }
 }

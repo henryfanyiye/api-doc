@@ -8,8 +8,6 @@ import { PostmanService } from './postman.service';
 import { Project } from './entity/project.entity';
 import { ProjectCatalog } from './entity/project-catalog.entity';
 import { ProjectItem } from './entity/project-item.entity';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entity/user.entity';
 import { UserProject } from '../user/entity/user-project.entity';
 
 
@@ -29,7 +27,6 @@ import { UserProject } from '../user/entity/user-project.entity';
         Project,
         ProjectCatalog,
         ProjectItem,
-        User,
         UserProject,
       ],
       'sqlite'),
@@ -39,7 +36,6 @@ import { UserProject } from '../user/entity/user-project.entity';
   ],
   providers: [
     PostmanService,
-    UserService,
   ],
 })
 export class PostmanModule {

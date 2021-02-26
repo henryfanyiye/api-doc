@@ -20,9 +20,9 @@ export class PostmanService {
     @InjectRepository(ProjectCatalog, 'sqlite')
     private readonly catalogRepository: Repository<ProjectCatalog>,
     @InjectRepository(ProjectItem, 'sqlite')
+    private readonly itemRepository: Repository<ProjectItem>,
     @InjectRepository(UserProject, 'sqlite')
     private readonly userProjectRepository: Repository<UserProject>,
-    private readonly itemRepository: Repository<ProjectItem>,
   ) {
   }
 
