@@ -1,11 +1,8 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import fs from 'fs';
 
 import { PostmanService } from './postman.service';
-import { CreateProjectDto } from './dto/create-project.dto';
-import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
-import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { User } from '../auth/decorator/user.decorator';
 
 @Controller('postman')
@@ -29,37 +26,5 @@ export class PostmanController {
     await this.postmanService.mappingAndInsert(uid, path);
     await fs.unlinkSync(path);
     return;
-  }
-
-  @Post('project/add')
-  async createProject(
-    @User() user: any,
-    @Body() input: CreateProjectDto,
-  ) {
-    const { uid } = user;
-    const pid = await this.postmanService.createProject(uid, input);
-    return { pid };
-  }
-
-  @Get('project/:id')
-  async queryProject(
-    @User() user: any,
-  ) {
-    const { uid } = user;
-    return await this.postmanService.queryProject(uid);
-  }
-
-  @Post('project/catalog/add')
-  async createCatalog(
-    @Body() input: CreateProjectCatalogDto,
-  ) {
-    return await this.postmanService.createCatalog(input);
-  }
-
-  @Post('project/item/add')
-  async createItem(
-    @Body() input: CreateProjectItemDto,
-  ) {
-    return await this.postmanService.createItem(input);
   }
 }

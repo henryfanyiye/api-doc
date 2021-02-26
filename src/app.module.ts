@@ -13,6 +13,7 @@ import { PostmanModule } from './modules/postman/postman.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
+import { ProjectModule } from './modules/project/project.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
     AuthModule,
     PostmanModule,
     UserModule,
+    ProjectModule,
   ],
   providers: [
     {
