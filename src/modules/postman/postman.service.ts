@@ -19,7 +19,7 @@ export class PostmanService {
       },
     );
     const { info, item } = JSON.parse(contents);
-    const pid = await this.projectService.createProject(uid, { project_name: info.name, description: null });
+    const pid = await this.projectService.createProject(uid, { project_name: info.name, description: null, creator: true, is_private: true });
     await this.batchInsert(pid, pid, item);
     return;
   }

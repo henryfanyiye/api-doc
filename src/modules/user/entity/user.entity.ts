@@ -1,28 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  uid: string;
+  @PrimaryColumn('integer')
+  uid: number;
 
-  @Column({ unique: true })
+  @Column('text', { unique: true })
   username: string;
 
-  @Column()
+  @Column('text')
   password: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   nick_name: string;
 
-  @Column({ unique: true })
+  @Column('text', { unique: true })
   email: string;
 
-  @Column()
-  create_time: Date;
+  @Column('text')
+  create_time: string;
 
-  @Column()
-  update_time: Date;
+  @Column('text')
+  update_time: string;
 
-  @Column({ nullable: true })
-  last_login_time: Date;
+  @Column('text', { nullable: true })
+  last_login_time: string;
 }

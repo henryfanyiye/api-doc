@@ -1,14 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import { ProjectCatalog } from './project-catalog.entity';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('project')
+@Entity()
 export class Project {
-  @PrimaryColumn()
+  @PrimaryColumn('integer')
   pid: number;
 
-  @Column({ nullable: true })
+  @Column('text')
   project_name: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   description: string;
 }

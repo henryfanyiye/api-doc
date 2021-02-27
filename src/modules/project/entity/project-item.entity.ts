@@ -1,20 +1,20 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('project_item')
+@Entity()
 export class ProjectItem {
-  @PrimaryColumn()
+  @PrimaryColumn('integer')
   id: number;
 
-  @Column()
+  @Column('text')
   name: string;
 
-  @Column()
+  @Column('text')
   context: string;
 
-  @Column()
+  @Column('integer')
   pid: number;
 
-  @Column()
+  @Column('integer')
   pcid: number;
 
 }

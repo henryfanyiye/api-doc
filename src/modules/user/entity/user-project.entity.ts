@@ -1,13 +1,20 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 
 @Entity()
 export class UserProject {
-  @PrimaryColumn()
+  @PrimaryColumn('integer')
   upid: number;
 
-  @Column()
+  @Column('integer')
   uid: number;
 
-  @Column()
+  @Column('integer')
   pid: number;
+
+  @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
+  creator: boolean;
+
+  @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
+  is_private: boolean;
 }

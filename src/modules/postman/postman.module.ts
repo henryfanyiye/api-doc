@@ -5,9 +5,9 @@ import { diskStorage } from 'multer';
 
 import { PostmanController } from './postman.controller';
 import { PostmanService } from './postman.service';
-import { Project } from './entity/project.entity';
-import { ProjectCatalog } from './entity/project-catalog.entity';
-import { ProjectItem } from './entity/project-item.entity';
+import { Project } from '../project/entity/project.entity';
+import { ProjectCatalog } from '../project/entity/project-catalog.entity';
+import { ProjectItem } from '../project/entity/project-item.entity';
 import { UserProject } from '../user/entity/user-project.entity';
 import { ProjectService } from '../project/project.service';
 

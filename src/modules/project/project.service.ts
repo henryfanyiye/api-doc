@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InsertResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { CreateProjectDto } from '../postman/dto/create-project.dto';
-import { ProjectCatalog } from '../postman/entity/project-catalog.entity';
-import { ProjectItem } from '../postman/entity/project-item.entity';
-import { CreateProjectCatalogDto } from '../postman/dto/create-project-catalog.dto';
-import { CreateProjectItemDto } from '../postman/dto/create-project-item.dto';
-import { Project } from '../postman/entity/project.entity';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { ProjectCatalog } from './entity/project-catalog.entity';
+import { ProjectItem } from './entity/project-item.entity';
+import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
+import { CreateProjectItemDto } from './dto/create-project-item.dto';
+import { Project } from './entity/project.entity';
 import { UserProject } from '../user/entity/user-project.entity';
 
 @Injectable()
@@ -25,9 +25,9 @@ export class ProjectService {
   ) {
   }
 
-  async createProject(uid: number, input: CreateProjectDto): Promise<number> {
+  async createProject(uid: number, input: CreateProjectDto): Promise<any> {
     const { raw } = await this.projectRepository.insert(input);
-    await this.userProjectRepository.insert({ uid, pid: raw });
+    await this.userProjectRepository.insert(Object.assign({ uid, pid: raw }, input));
     return raw;
   }
 

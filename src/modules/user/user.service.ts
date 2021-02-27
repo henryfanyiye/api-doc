@@ -8,7 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { CustomErrorException } from '../../lib/error/custom-error.exception';
 import { CustomError } from '../../lib/error/custom.error';
-import { Project } from '../postman/entity/project.entity';
+import { Project } from '../project/entity/project.entity';
 import { UserProject } from './entity/user-project.entity';
 
 @Injectable()
@@ -52,14 +52,21 @@ export class UserService {
   }
 
   async queryProjectList(uid: number): Promise<any> {
-    return this.userProjectRepository.createQueryBuilder('user_project')
+    let res = await this.userProjectRepository.createQueryBuilder('user_project')
       .leftJoinAndSelect(Project, 'project', 'user_project.pid=project.pid')
       .select([
         'project.pid as projectId',
         'project.project_name as projectName',
-        'project.description as desc',
+        'project.description as description',
+        'user_project.creator as creator',
+        'user_project.is_private as is_private',
       ])
       .where('user_project.uid = :uid', { uid })
       .getRawMany();
+    for (let i in res) {
+      res[i].creator = res[i].creator === '0' ? false : true;
+      res[i].is_private = res[i].is_private === '0' ? false : true;
+    }
+    return res;
   }
 }

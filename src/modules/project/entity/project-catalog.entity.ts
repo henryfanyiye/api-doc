@@ -1,17 +1,17 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { ProjectItem } from './project-item.entity';
 
-@Entity('project_catalog')
+@Entity()
 export class ProjectCatalog {
-  @PrimaryColumn()
+  @PrimaryColumn('integer')
   pcid: number;
 
-  @Column()
+  @Column('text')
   catalog_name: string;
 
-  @Column({ nullable: true })
+  @Column('integer')
   parentId: number;
 
-  @Column()
+  @Column('integer')
   pid: number;
 }

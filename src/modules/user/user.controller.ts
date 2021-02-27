@@ -34,14 +34,18 @@ export class UserController {
     return res;
   }
 
-  @Get('detail/:id')
+  @Get('detail')
   async detail(
-    @Param('id') id: string,
+    @User() user: any,
   ) {
-    const user = await this.userService.detail(id);
+    let uid
     if (user) {
-      delete user.password;
-      return user;
+      uid = user.uid;
+    }
+    const res = await this.userService.detail(uid);
+    if (res) {
+      delete res.password;
+      return res;
     } else {
       throw new BadRequestException('UserId is not exist.');
     }

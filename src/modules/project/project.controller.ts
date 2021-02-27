@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { User } from '../auth/decorator/user.decorator';
-import { CreateProjectDto } from '../postman/dto/create-project.dto';
-import { CreateProjectCatalogDto } from '../postman/dto/create-project-catalog.dto';
-import { CreateProjectItemDto } from '../postman/dto/create-project-item.dto';
+import { CreateProjectDto } from './dto/create-project.dto';
+import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
+import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { ProjectService } from './project.service';
 
 @Controller('project')

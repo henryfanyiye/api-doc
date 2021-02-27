@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class CreateProjectDto {
 
@@ -8,4 +8,10 @@ export class CreateProjectDto {
   @IsOptional()
   @IsString()
   description: string;
+
+  @IsBoolean()
+  creator: boolean;
+
+  @IsBoolean()
+  is_private: boolean;
 }
