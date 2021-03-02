@@ -31,6 +31,14 @@ export class ProjectController {
     return await this.projectService.queryProject(Number(id));
   }
 
+  @Post('project/update/:id')
+  async updateProject(
+    @Param('id') id: string,
+    @Body() input: CreateProjectDto,
+  ) {
+    return await this.projectService.updateProject(Number(id), input);
+  }
+
   @Post('catalog/add')
   async createCatalog(
     @Body() input: CreateProjectCatalogDto,

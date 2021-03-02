@@ -31,22 +31,16 @@ export class ProjectService {
     return raw;
   }
 
+  async updateProject(pid: number, input: CreateProjectDto): Promise<any> {
+    await this.projectRepository.update({ pid }, input);
+    if (input.creator) {
+      await this.userProjectRepository.update({ pid }, input);
+    }
+    return;
+  }
+
   async queryProject(id: number): Promise<any> {
-    return await this.projectRepository.createQueryBuilder('project')
-      .leftJoinAndSelect(ProjectCatalog, 'project_catalog', 'project.pid=project_catalog.pid')
-      .leftJoinAndSelect(ProjectItem, 'project_item', 'project_catalog.pcid=project_item.pcid')
-      .select([
-        'project.pid as projectId',
-        'project.project_name as projectName',
-        'project_catalog.pcid as catalogId',
-        'project_catalog.catalog_name as catalogName',
-        'project_catalog.parentId as parentId',
-        'project_item.id as itemId',
-        'project_item.name as itemName',
-        'project_item.context as itemContext',
-      ])
-      .where('project.pid = :id', { id })
-      .getRawMany();
+    return await this.projectRepository.findOne({ pid: id });
   }
 
   async createCatalog(input: CreateProjectCatalogDto): Promise<InsertResult> {

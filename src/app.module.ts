@@ -14,6 +14,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
 import { ProjectModule } from './modules/project/project.module';
+import { TeamModule } from './modules/team/team.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ProjectModule } from './modules/project/project.module';
     PostmanModule,
     UserModule,
     ProjectModule,
+    TeamModule,
   ],
   providers: [
     {

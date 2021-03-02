@@ -14,7 +14,4 @@ export class UserProject {
 
   @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
   creator: boolean;
-
-  @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
-  is_private: boolean;
 }

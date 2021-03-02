@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 
 @Entity()
 export class Project {
@@ -10,4 +11,10 @@ export class Project {
 
   @Column('text', { nullable: true })
   description: string;
+
+  @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
+  is_private: boolean;
+
+  @Column('text', { nullable: true })
+  password: string;
 }
