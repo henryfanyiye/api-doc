@@ -46,6 +46,14 @@ export class ProjectController {
     return await this.projectService.deleteProject(Number(id));
   }
 
+  @Post('project/attorn')
+  async attornProject(
+    @Body() data: any,
+  ) {
+    const { pid, username, password } = data;
+    return await this.projectService.attornProject(pid, username);
+  }
+
   @Post('catalog/add')
   async createCatalog(
     @Body() input: CreateProjectCatalogDto,

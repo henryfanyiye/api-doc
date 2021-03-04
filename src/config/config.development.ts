@@ -9,7 +9,7 @@ export default () => ({
   jwt: {
     secret: 'secretKey',
     signOptions: {
-      expiresIn: 3600,
+      expiresIn: 7200,
     },
   },
 })

@@ -9,19 +9,19 @@ import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { Project } from './entity/project.entity';
 import { UserProject } from '../user/entity/user-project.entity';
+import { CustomErrorException } from '../../lib/error/custom-error.exception';
+import { CustomError } from '../../lib/error/custom.error';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProjectService {
 
   constructor(
-    @InjectRepository(Project, 'sqlite')
-    private readonly projectRepository: Repository<Project>,
-    @InjectRepository(ProjectCatalog, 'sqlite')
-    private readonly catalogRepository: Repository<ProjectCatalog>,
-    @InjectRepository(ProjectItem, 'sqlite')
-    private readonly itemRepository: Repository<ProjectItem>,
-    @InjectRepository(UserProject, 'sqlite')
-    private readonly userProjectRepository: Repository<UserProject>,
+    @InjectRepository(Project, 'sqlite') private readonly projectRepository: Repository<Project>,
+    @InjectRepository(ProjectCatalog, 'sqlite') private readonly catalogRepository: Repository<ProjectCatalog>,
+    @InjectRepository(ProjectItem, 'sqlite') private readonly itemRepository: Repository<ProjectItem>,
+    @InjectRepository(UserProject, 'sqlite') private readonly userProjectRepository: Repository<UserProject>,
+    private readonly userService: UserService,
   ) {
   }
 
@@ -32,7 +32,12 @@ export class ProjectService {
   }
 
   async queryProject(pid: number): Promise<any> {
-    return await this.projectRepository.findOne({ pid });
+    const res = await this.projectRepository.findOne({ pid });
+    if (res) {
+      return res;
+    } else {
+      throw new CustomErrorException(CustomError.InvalidProjectId);
+    }
   }
 
   async updateProject(pid: number, input: CreateProjectDto): Promise<any> {
@@ -51,12 +56,27 @@ export class ProjectService {
     return;
   }
 
+  async attornProject(pid: number, username: string): Promise<any> {
+    const res = await this.userService.query({ username });
+    if (res) {
+      await this.userProjectRepository.update({ pid }, { uid: res.uid });
+      return;
+    } else {
+      throw new CustomErrorException(CustomError.NoUserExist);
+    }
+  }
+
   async createCatalog(input: CreateProjectCatalogDto): Promise<InsertResult> {
     return await this.catalogRepository.insert(input);
   }
 
   async queryCatalog(pcid: number): Promise<any> {
-    return await this.catalogRepository.findOne({ pcid });
+    const res = await this.catalogRepository.findOne({ pcid });
+    if (res) {
+      return res;
+    } else {
+      throw new CustomErrorException(CustomError.InvalidCatalogId);
+    }
   }
 
   async updateCatalog(pcid: number, input: CreateProjectCatalogDto): Promise<any> {
@@ -72,7 +92,12 @@ export class ProjectService {
   }
 
   async queryItem(id: number): Promise<any> {
-    return await this.itemRepository.findOne({ id });
+    const res = await this.itemRepository.findOne({ id });
+    if (res) {
+      return res;
+    } else {
+      throw new CustomErrorException(CustomError.InvalidItemId);
+    }
   }
 
   async updateItem(id: number, input: CreateProjectItemDto): Promise<any> {

@@ -15,10 +15,6 @@ export class CreateProjectDto {
   creator: boolean;
 
   @IsOptional()
-  @IsBoolean()
-  is_private: boolean;
-
-  @IsOptional()
   @IsString()
   password: string;
 }

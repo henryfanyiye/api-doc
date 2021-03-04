@@ -24,7 +24,6 @@ export class PostmanService {
       project_name: info.name,
       description: null,
       creator: true,
-      is_private: false,
       password: null,
     });
     await this.batchInsert(pid, pid, item);

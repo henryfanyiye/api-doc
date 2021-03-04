@@ -51,6 +51,15 @@ export class UserService {
     }
   }
 
+  async query(data: any): Promise<User> {
+    const res = await this.userRepository.findOne(data);
+    if (res) {
+      return res;
+    } else {
+      throw new CustomErrorException(CustomError.NoUserExist);
+    }
+  }
+
   async queryProjectList(uid: number): Promise<any> {
     let res = await this.userProjectRepository.createQueryBuilder('user_project')
       .leftJoinAndSelect(Project, 'project', 'user_project.pid=project.pid')
@@ -58,15 +67,26 @@ export class UserService {
         'project.pid as projectId',
         'project.project_name as projectName',
         'project.description as description',
-        'project.is_private as is_private',
         'user_project.creator as creator',
       ])
       .where('user_project.uid = :uid', { uid })
       .getRawMany();
     for (let i in res) {
       res[i].creator = res[i].creator === '0' ? false : true;
-      res[i].is_private = res[i].is_private === '0' ? false : true;
     }
     return res;
+  }
+
+  async checkPassword(uid: number, password: string): Promise<boolean> {
+    const res = await this.userRepository.findOne({ uid });
+    if (res) {
+      if (res.password === password) {
+        return;
+      } else {
+        throw new CustomErrorException(CustomError.PasswordError);
+      }
+    } else {
+      throw new CustomErrorException(CustomError.InvalidUserId);
+    }
   }
 }

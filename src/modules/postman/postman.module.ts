@@ -8,8 +8,10 @@ import { PostmanService } from './postman.service';
 import { Project } from '../project/entity/project.entity';
 import { ProjectCatalog } from '../project/entity/project-catalog.entity';
 import { ProjectItem } from '../project/entity/project-item.entity';
+import { User } from '../user/entity/user.entity';
 import { UserProject } from '../user/entity/user-project.entity';
 import { ProjectService } from '../project/project.service';
+import { UserService } from '../user/user.service';
 
 
 @Module({
@@ -28,6 +30,7 @@ import { ProjectService } from '../project/project.service';
         Project,
         ProjectCatalog,
         ProjectItem,
+        User,
         UserProject,
       ],
       'sqlite'),
@@ -38,6 +41,7 @@ import { ProjectService } from '../project/project.service';
   providers: [
     PostmanService,
     ProjectService,
+    UserService,
   ],
 })
 export class PostmanModule {

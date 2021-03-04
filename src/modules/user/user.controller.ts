@@ -38,7 +38,7 @@ export class UserController {
   async detail(
     @User() user: any,
   ) {
-    let uid
+    let uid;
     if (user) {
       uid = user.uid;
     }
@@ -57,5 +57,15 @@ export class UserController {
   ) {
     const { uid } = user;
     return this.userService.queryProjectList(uid);
+  }
+
+  @Post('password/check')
+  async checkPassword(
+    @User() user: any,
+    @Body() data: any,
+  ) {
+    const { uid } = user;
+    const { password } = data;
+    return this.userService.checkPassword(uid, password);
   }
 }
