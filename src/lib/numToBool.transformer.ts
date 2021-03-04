@@ -7,10 +7,10 @@ export class NumToBoolTransformer implements ValueTransformer {
   }
 
   // From db to typeorm
-  from(value: Buffer): boolean | null {
+  from(value: number): boolean | null {
     if (value === null) {
       return false;
     }
-    return value[0] === 1;
+    return value === 1;
   }
 }

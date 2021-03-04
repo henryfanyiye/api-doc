@@ -58,8 +58,8 @@ export class UserService {
         'project.pid as projectId',
         'project.project_name as projectName',
         'project.description as description',
+        'project.is_private as is_private',
         'user_project.creator as creator',
-        'user_project.is_private as is_private',
       ])
       .where('user_project.uid = :uid', { uid })
       .getRawMany();

@@ -31,6 +31,10 @@ export class ProjectService {
     return raw;
   }
 
+  async queryProject(pid: number): Promise<any> {
+    return await this.projectRepository.findOne({ pid });
+  }
+
   async updateProject(pid: number, input: CreateProjectDto): Promise<any> {
     await this.projectRepository.update({ pid }, input);
     if (input.creator) {
@@ -39,15 +43,56 @@ export class ProjectService {
     return;
   }
 
-  async queryProject(id: number): Promise<any> {
-    return await this.projectRepository.findOne({ pid: id });
+  async deleteProject(pid: number): Promise<any> {
+    await this.itemRepository.delete({ pid });
+    await this.userProjectRepository.delete({ pid });
+    await this.catalogRepository.delete({ pid });
+    await this.projectRepository.delete({ pid });
+    return;
   }
 
   async createCatalog(input: CreateProjectCatalogDto): Promise<InsertResult> {
     return await this.catalogRepository.insert(input);
   }
 
+  async queryCatalog(pcid: number): Promise<any> {
+    return await this.catalogRepository.findOne({ pcid });
+  }
+
+  async updateCatalog(pcid: number, input: CreateProjectCatalogDto): Promise<any> {
+    return await this.catalogRepository.update({ pcid }, input);
+  }
+
+  async deleteCatalog(pcid: number): Promise<any> {
+    return await this.catalogRepository.delete({ pcid });
+  }
+
   async createItem(input: CreateProjectItemDto): Promise<InsertResult> {
     return await this.itemRepository.insert(input);
+  }
+
+  async queryItem(id: number): Promise<any> {
+    return await this.itemRepository.findOne({ id });
+  }
+
+  async updateItem(id: number, input: CreateProjectItemDto): Promise<any> {
+    return await this.itemRepository.update({ id }, input);
+  }
+
+  async deleteItem(id: number): Promise<any> {
+    return await this.itemRepository.delete({ id });
+  }
+
+  async queryProjectInfo(pid: number) {
+    const { project_name: projectName } = await this.projectRepository.findOne({ pid });
+    const catalogs = await this.catalogRepository.find({ pid });
+    const res = await Promise.all(
+      catalogs.map(async item => {
+        const { pcid, catalog_name: catalogName, parentId } = item;
+        const res = await this.itemRepository.find({ pcid: item.pcid });
+        return { pcid, catalogName, parentId, items: res };
+      }),
+    );
+    return { pid, projectName, catalogs: res };
   }
 }

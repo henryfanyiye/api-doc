@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs';
 
 import { ProjectService } from '../project/project.service';
+import { jsonToMd } from '../../lib/helper';
 
 @Injectable()
 export class PostmanService {
@@ -38,10 +39,10 @@ export class PostmanService {
         await this.batchInsert(pid, raw, item);
       }
       if (request) {
-        await this.projectService.createItem({ name, context: JSON.stringify(request), pid, pcid: parentId });
+        const context: string = jsonToMd(data[i]);
+        await this.projectService.createItem({ name, context, pid, pcid: parentId });
       }
     }
     return;
   }
-
 }

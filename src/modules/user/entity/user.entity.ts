@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 
 @Entity()
 export class User {
@@ -16,6 +17,9 @@ export class User {
 
   @Column('text', { unique: true })
   email: string;
+
+  @Column({ nullable: true, type: 'blob', transformer: new NumToBoolTransformer() })
+  admin: boolean;
 
   @Column('text')
   create_time: string;

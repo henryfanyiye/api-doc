@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 
 import { User } from '../auth/decorator/user.decorator';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -39,6 +39,13 @@ export class ProjectController {
     return await this.projectService.updateProject(Number(id), input);
   }
 
+  @Delete('project/:id')
+  async deleteProject(
+    @Param('id') id: string,
+  ) {
+    return await this.projectService.deleteProject(Number(id));
+  }
+
   @Post('catalog/add')
   async createCatalog(
     @Body() input: CreateProjectCatalogDto,
@@ -46,10 +53,61 @@ export class ProjectController {
     return await this.projectService.createCatalog(input);
   }
 
+  @Get('catalog/:id')
+  async queryCatalog(
+    @Param('id') id: string,
+  ) {
+    return this.projectService.queryCatalog(Number(id));
+  }
+
+  @Post('catalog/update/:id')
+  async updateCatalog(
+    @Param('id') id: string,
+    @Body() input: CreateProjectCatalogDto,
+  ) {
+    return this.projectService.updateCatalog(Number(id), input);
+  }
+
+  @Delete('catalog/:id')
+  async deleteCatalog(
+    @Param('id') id: string,
+  ) {
+    return this.projectService.deleteCatalog(Number(id));
+  }
+
   @Post('item/add')
   async createItem(
     @Body() input: CreateProjectItemDto,
   ) {
     return await this.projectService.createItem(input);
+  }
+
+  @Get('item/:id')
+  async queryItem(
+    @Param('id') id: string,
+  ) {
+    return this.projectService.queryItem(Number(id));
+  }
+
+  @Post('item/update/:id')
+  async updateItem(
+    @Param('id') id: string,
+    @Body() input: CreateProjectItemDto,
+  ) {
+    return await this.projectService.updateItem(Number(id), input);
+  }
+
+  @Delete('item/:id')
+  async deleteItem(
+    @Param('id') id: string,
+  ) {
+    return this.projectService.deleteItem(Number(id));
+  }
+
+  @Get('/:id')
+  async queryProjectInfo(
+    @Param('id') id: string,
+  ) {
+    return await this.projectService.queryProjectInfo(Number(id));
   }
 }
