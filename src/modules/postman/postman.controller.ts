@@ -19,12 +19,20 @@ export class PostmanController {
     @UploadedFile() file,
   ) {
     const { uid } = user;
-    const { filename, path } = file;
-    await fs.readFileSync(path, {
-      encoding: 'utf8',
-    });
+    const { path } = file;
     await this.postmanService.mappingAndInsert(uid, path);
     await fs.unlinkSync(path);
     return;
+  }
+
+  @Post('getApiList')
+  @UseInterceptors(FileInterceptor('file'))
+  async getApiList(
+    @User() user: any,
+    @UploadedFile() file,
+  ) {
+    const { uid } = user;
+    const { path } = file;
+    return await this.postmanService.getApiList(uid, path);
   }
 }

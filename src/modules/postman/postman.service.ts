@@ -44,4 +44,29 @@ export class PostmanService {
     }
     return;
   }
+
+  async getApiList(uid: number, filePath: string): Promise<any> {
+    const contents: string = await fs.readFileSync(
+      filePath,
+      {
+        encoding: 'utf8',
+      },
+    );
+    const { item } = JSON.parse(contents);
+    return await this.filterApi(item, []);
+  }
+
+  async filterApi(data: any, api) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].request) {
+        let raw = data[i].request.url.raw.split('}}')[1];
+        raw = raw.split('?')[0];
+        api.push(`${data[i].name},${raw}`);
+      }
+      if (data[i].item) {
+        await this.filterApi(data[i].item, api);
+      }
+    }
+    return api;
+  }
 }
