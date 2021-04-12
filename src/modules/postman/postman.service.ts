@@ -64,6 +64,7 @@ export class PostmanService {
         api.push(`${data[i].name},${raw}`);
       }
       if (data[i].item) {
+        api.push(data[i].name);
         await this.filterApi(data[i].item, api);
       }
     }
