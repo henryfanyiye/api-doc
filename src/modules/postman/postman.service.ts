@@ -59,9 +59,13 @@ export class PostmanService {
   async filterApi(data: any, api) {
     for (let i = 0; i < data.length; i++) {
       if (data[i].request) {
-        let raw = data[i].request.url.raw.split('}}')[1];
-        raw = raw.split('?')[0];
-        api.push(`${data[i].name},${raw}`);
+        const raw = data[i].request.url.raw.split('/');
+        let str = '';
+        for (let j = 1; j < raw.length; j++) {
+          str += raw[j];
+        }
+        str = str.split('?')[0];
+        api.push(`${data[i].name},${str}`);
       }
       if (data[i].item) {
         api.push(data[i].name);
