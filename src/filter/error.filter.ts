@@ -1,18 +1,14 @@
-import { Catch, HttpException, Logger } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 
 @Catch(HttpException)
-export class ErrorFilter {
-  catch(exception, host) {
+export class ErrorFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const status = exception.getStatus();
 
-    const { method, originalUrl } = ctx['contextType'] === 'graphql' ? {
-      method: 'POST',
-      originalUrl: `/graphql - ${ctx.args[3].fieldName}`,
-    } : request;
-
+    const { method, originalUrl } = request;
 
     const code = exception['response'] && exception['response'].code ? exception['response'].code : status;
 
@@ -27,11 +23,9 @@ export class ErrorFilter {
 
     Logger.error(JSON.stringify(data));
 
-    if (ctx['contextType'] !== 'graphql') {
-      response.status(status).json({
-        code: code,
-        msg: message,
-      });
-    }
+    response.status(status).json({
+      code: code,
+      msg: message,
+    });
   }
 }
