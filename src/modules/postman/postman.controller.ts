@@ -38,7 +38,7 @@ export class PostmanController {
     const data = await this.postmanService.getApiList(path);
     const title = filename.replace('.json', '.csv');
     await this.postmanService.createCsv(title, data);
-    return `http://127.0.0.1:3000/api/postman/download/${title}`;
+    return `http://172.16.97.63:3000/api/postman/download/${title}`;
   }
 
   @Public()

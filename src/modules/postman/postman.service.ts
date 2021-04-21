@@ -61,7 +61,7 @@ export class PostmanService {
   async filterApi(data: any, api) {
     for (let i = 0; i < data.length; i++) {
       if (data[i].item) {
-        api.push(data[i].name);
+        api.push({ name: data[i].name});
         await this.filterApi(data[i].item, api);
       }
       if (data[i].request) {
@@ -71,7 +71,7 @@ export class PostmanService {
           str += '/' + raw[j];
         }
         if (str.indexOf('?') > -1) str = str.split('?')[0];
-        api.push(`${data[i].name},${str}`);
+        api.push({ name: data[i].name, api: str });
       }
     }
     return api;
