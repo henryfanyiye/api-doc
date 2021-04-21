@@ -6,8 +6,8 @@ export class UserProject {
   @PrimaryColumn('integer')
   upid: number;
 
-  @Column('integer')
-  uid: number;
+  @PrimaryColumn('text', { unique: true })
+  member_id: string;
 
   @Column('integer')
   pid: number;

@@ -12,9 +12,10 @@ import { ErrorFilter } from './filter/error.filter';
 import { PostmanModule } from './modules/postman/postman.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
+import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { ProjectModule } from './modules/project/project.module';
 import { TeamModule } from './modules/team/team.module';
+import { RedisModule } from '@svtslv/nestjs-ioredis';
 
 @Module({
   imports: [
@@ -24,7 +25,13 @@ import { TeamModule } from './modules/team/team.module';
       cache: true, // 缓存环境变量
       load: [config],
     }),
-    // Database
+    // Redis
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => config.get('ioredis'),
+      inject: [ConfigService],
+    }),
+    // SQLite
     TypeOrmModule.forRootAsync({
       name: 'sqlite',
       imports: [ConfigModule],
@@ -41,7 +48,7 @@ import { TeamModule } from './modules/team/team.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: AuthGuard,
     },
     // Response格式化
     {

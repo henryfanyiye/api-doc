@@ -6,7 +6,7 @@ import { join } from 'path';
 
 import { PostmanService } from './postman.service';
 import { User } from '../auth/decorator/user.decorator';
-import { Public } from '../auth/decorator/jwt.decorator';
+import { Public } from '../auth/decorator/auth.decorator';
 
 @Controller('postman')
 export class PostmanController {

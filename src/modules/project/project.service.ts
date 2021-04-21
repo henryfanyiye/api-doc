@@ -59,7 +59,7 @@ export class ProjectService {
   async attornProject(pid: number, username: string): Promise<any> {
     const res = await this.userService.query({ username });
     if (res) {
-      await this.userProjectRepository.update({ pid }, { uid: res.uid });
+      await this.userProjectRepository.update({ pid }, { member_id: res.member_id });
       return;
     } else {
       throw new CustomErrorException(CustomError.NoUserExist);

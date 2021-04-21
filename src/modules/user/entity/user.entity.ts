@@ -4,7 +4,10 @@ import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 @Entity()
 export class User {
   @PrimaryColumn('integer')
-  uid: number;
+  id: number;
+
+  @Column('text', { unique: true })
+  member_id: string;
 
   @Column('text', { unique: true })
   username: string;
@@ -18,8 +21,8 @@ export class User {
   @Column('text', { unique: true })
   email: string;
 
-  @Column({ nullable: true, type: 'blob', transformer: new NumToBoolTransformer() })
-  admin: boolean;
+  // @Column({ nullable: true, type: 'blob', transformer: new NumToBoolTransformer() })
+  // admin: boolean;
 
   @Column('text')
   create_time: string;
