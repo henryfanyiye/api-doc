@@ -11,8 +11,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3000);
-  Logger.log('Server listening at: http://localhost:3000');
+  const port = app.get('ConfigService').get('port');
+  await app.listen(port);
+  Logger.log(`Server listening at: http://localhost:${port}`);
 }
 
 bootstrap();

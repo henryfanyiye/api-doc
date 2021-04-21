@@ -1,5 +1,5 @@
 export default () => ({
-  hostname: '127.0.0.1',
+  hostname: 'beimoting.fun',
   port: 3000,
   sqlite: {
     type: 'sqlite',

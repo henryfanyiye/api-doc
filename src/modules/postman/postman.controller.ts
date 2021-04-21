@@ -3,6 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import fs from 'fs';
 import { Response } from 'express';
 import { join } from 'path';
+import { ConfigService } from '@nestjs/config';
 
 import { PostmanService } from './postman.service';
 import { User } from '../auth/decorator/user.decorator';
@@ -12,6 +13,7 @@ import { Public } from '../auth/decorator/auth.decorator';
 export class PostmanController {
   constructor(
     private readonly postmanService: PostmanService,
+    private readonly config: ConfigService,
   ) {
   }
 
@@ -38,7 +40,7 @@ export class PostmanController {
     const data = await this.postmanService.getApiList(path);
     const title = filename.replace('.json', '.csv');
     await this.postmanService.createCsv(title, data);
-    return `http://172.16.97.63:3000/api/postman/download/${title}`;
+    return `http://${this.config.get('hostname')}:${this.config.get('port')}/api/postman/download/${title}`;
   }
 
   @Public()

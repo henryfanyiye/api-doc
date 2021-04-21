@@ -6,8 +6,7 @@ import { hash } from 'typeorm/util/StringUtils';
 @Injectable()
 export class AuthService {
   constructor(
-    // private readonly jwtService: JwtService,
-    private readonly configServer: ConfigService,
+    private readonly config: ConfigService,
     @InjectRedis() private readonly redis: Redis,
   ) {
   }
@@ -22,7 +21,7 @@ export class AuthService {
 
   async generateToken(payload: any) {
     const { member_id } = payload;
-    const { tokenKey, expiresIn } = this.configServer.get('auth');
+    const { tokenKey, expiresIn } = this.config.get('auth');
 
     const userKey = `${tokenKey}${member_id}`;
 
