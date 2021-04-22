@@ -69,16 +69,19 @@ export class UserService {
     }
   }
 
-  async queryProjectList(member_id: number): Promise<any> {
+  async queryProjectList(member_id: number, is_delete = false): Promise<any> {
     let res = await this.userProjectRepository.createQueryBuilder('user_project')
-      .leftJoinAndSelect(Project, 'project', 'user_project.pid=project.pid')
+      .leftJoinAndSelect(Project, 'project', 'user_project.project_id=project.project_id')
       .select([
-        'project.pid as projectId',
+        'project.project_id as projectId',
         'project.project_name as projectName',
         'project.description as description',
         'user_project.creator as creator',
       ])
-      .where('user_project.uid = :uid', { member_id })
+      .where('user_project.member_id = :member_id and project.is_delete = :is_delete', {
+        member_id,
+        is_delete: is_delete ? true : false,
+      })
       .getRawMany();
     for (let i in res) {
       res[i].creator = res[i].creator === '0' ? false : true;

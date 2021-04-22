@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { hash } from 'typeorm/util/StringUtils';
 
 import { UserService } from './user.service';
@@ -53,8 +53,9 @@ export class UserController {
   @Get('project/list')
   async queryProjectList(
     @User() user: any,
+    @Query('is_delete') id_delete?: boolean,
   ) {
-    return this.userService.queryProjectList(user.member_id);
+    return this.userService.queryProjectList(user.member_id, id_delete);
   }
 
   @Post('password/check')

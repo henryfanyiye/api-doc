@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import fs from 'fs';
-import { Parser } from 'json2csv';
 
 import { ProjectService } from '../project/project.service';
-import { jsonToMd } from '../../lib/helper';
-import { join } from 'path';
+import { UserService } from '../user/user.service';
+import { mappingFiled, filterApi } from '../../lib/helper';
 
 @Injectable()
 export class PostmanService {
 
   constructor(
     private readonly projectService: ProjectService,
+    private readonly userService: UserService,
   ) {
   }
 
-  async mappingAndInsert(uid: number, filePath: string): Promise<any> {
+  async importCollection(member_id: string, filePath: string): Promise<void> {
     const contents: string = await fs.readFileSync(
       filePath,
       {
@@ -22,26 +22,35 @@ export class PostmanService {
       },
     );
     const { info, item } = JSON.parse(contents);
-    const pid = await this.projectService.createProject(uid, {
+    const { password } = await this.userService.detail(member_id);
+    const project_id = await this.projectService.createProject(member_id, {
       project_name: info.name,
       description: null,
+      password,
+      is_private: true,
+      is_delete: false,
       creator: true,
-      password: null,
     });
-    await this.batchInsert(pid, pid, item);
+    await this.batchInsert(project_id, item);
     return;
   }
 
-  async batchInsert(pid: number, parentId: number, data): Promise<any> {
+  async batchInsert(project_id: number, data: any, parentId = 0, level = 1): Promise<void> {
     for (const i in data) {
       const { name, item, request } = data[i];
       if (item) {
-        const { raw } = await this.projectService.createCatalog({ catalog_name: name, pid, parentId });
-        await this.batchInsert(pid, raw, item);
+        const { raw } = await this.projectService.createCatalog({
+          catalog_name: name,
+          project_id,
+          parentId,
+          level,
+          is_delete: false,
+        });
+        await this.batchInsert(project_id, item, raw, level++);
       }
       if (request) {
-        const context: string = jsonToMd(data[i]);
-        await this.projectService.createItem({ name, context, pid, pcid: parentId });
+        const requestMap = mappingFiled(data[i]);
+        await this.projectService.createItem(Object.assign(requestMap, { project_id, catalog_id: parentId }));
       }
     }
     return;
@@ -55,42 +64,6 @@ export class PostmanService {
       },
     );
     const { item } = JSON.parse(contents);
-    return await this.filterApi(item, []);
-  }
-
-  async filterApi(data: any, api) {
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].item) {
-        api.push({ name: data[i].name});
-        await this.filterApi(data[i].item, api);
-      }
-      if (data[i].request) {
-        const raw = data[i].request.url.raw.split('/');
-        let str = '';
-        for (let j = 1; j < raw.length; j++) {
-          str += '/' + raw[j];
-        }
-        if (str.indexOf('?') > -1) str = str.split('?')[0];
-        api.push({ name: data[i].name, api: str });
-      }
-    }
-    return api;
-  }
-
-  async createCsv(title: string, data: any) {
-    const fields = [
-      { label: 'Name', value: 'name' },
-      { label: 'API', value: 'api' },
-    ];
-
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(data);
-
-    const dirPath = join(__dirname, '../../files');
-    const filePath = dirPath + `/${title}`;
-    await fs.promises.mkdir(dirPath, { recursive: true });
-    await fs.writeFileSync(filePath, csv);
-
-    return filePath;
+    return filterApi(item, []);
   }
 }

@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { PostmanService } from './postman.service';
 import { User } from '../auth/decorator/user.decorator';
 import { Public } from '../auth/decorator/auth.decorator';
+import { createCsv } from '../../lib/helper';
 
 @Controller('postman')
 export class PostmanController {
@@ -23,9 +24,8 @@ export class PostmanController {
     @User() user: any,
     @UploadedFile() file,
   ) {
-    const { uid } = user;
     const { path } = file;
-    await this.postmanService.mappingAndInsert(uid, path);
+    await this.postmanService.importCollection(user.member_id, path);
     await fs.unlinkSync(path);
     return;
   }
@@ -39,7 +39,11 @@ export class PostmanController {
     const { path, filename } = file;
     const data = await this.postmanService.getApiList(path);
     const title = filename.replace('.json', '.csv');
-    await this.postmanService.createCsv(title, data);
+    const fields = [
+      { label: 'Name', value: 'name' },
+      { label: 'API', value: 'api' },
+    ];
+    await createCsv(title, fields, data);
     return `http://${this.config.get('hostname')}:${this.config.get('port')}/api/postman/download/${title}`;
   }
 

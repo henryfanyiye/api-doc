@@ -8,7 +8,7 @@ export class NumToBoolTransformer implements ValueTransformer {
 
   // From db to typeorm
   from(value: number): boolean | null {
-    if (value === null) {
+    if (value === null || value === 0) {
       return false;
     }
     return value === 1;

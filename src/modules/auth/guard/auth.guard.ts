@@ -29,14 +29,17 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
+
     let token = request.headers.authorization;
-    if (!token) {
-      throw new UnauthorizedException();
-    }
+    if (!token) throw new UnauthorizedException();
+
     token = token.replace('Bearer ', '');
     const user = await this.authService.validate(token);
 
+    if (!token) throw new UnauthorizedException();
+
     context.switchToHttp().getRequest()['user'] = user;
+
     return context;
   }
 }

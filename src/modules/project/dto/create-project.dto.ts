@@ -10,9 +10,16 @@ export class CreateProjectDto {
   @IsString()
   description: string;
 
+  @IsBoolean()
+  is_private: boolean = false;
+
   @IsOptional()
   @IsBoolean()
-  creator: boolean;
+  is_delete: boolean = false;
+
+  @IsOptional()
+  @IsBoolean()
+  creator: boolean = true;
 
   @IsOptional()
   @IsString()

@@ -4,13 +4,13 @@ import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 @Entity()
 export class UserProject {
   @PrimaryColumn('integer')
-  upid: number;
+  id: number;
 
-  @PrimaryColumn('text', { unique: true })
+  @Column('text')
   member_id: string;
 
   @Column('integer')
-  pid: number;
+  project_id: number;
 
   @Column({ type: 'blob', transformer: new NumToBoolTransformer() })
   creator: boolean;

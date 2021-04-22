@@ -4,7 +4,7 @@ import { NumToBoolTransformer } from '../../../lib/numToBool.transformer';
 @Entity()
 export class Project {
   @PrimaryColumn('integer')
-  pid: number;
+  project_id: number;
 
   @Column('text')
   project_name: string;
@@ -14,4 +14,10 @@ export class Project {
 
   @Column('text', { nullable: true })
   password: string;
+
+  @Column({ type: 'blob', transformer: new NumToBoolTransformer(), comment: '0 | 1' })
+  is_private: boolean;
+
+  @Column({ type: 'blob', transformer: new NumToBoolTransformer(), comment: '0 | 1' })
+  is_delete: boolean;
 }

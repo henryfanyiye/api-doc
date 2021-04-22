@@ -13,7 +13,4 @@ export class RegisterDto {
 
   @IsEmail()
   email: string;
-
-  @IsBoolean()
-  admin: boolean;
 }

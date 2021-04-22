@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateProjectCatalogDto {
 
@@ -7,8 +7,16 @@ export class CreateProjectCatalogDto {
 
   @IsOptional()
   @IsInt()
-  parentId: number;
+  parentId: number = 0;
+
+  @IsOptional()
+  @IsInt()
+  level: number = 1;
 
   @IsInt()
-  pid: number;
+  project_id: number;
+
+  @IsOptional()
+  @IsBoolean()
+  is_delete: boolean = false;
 }

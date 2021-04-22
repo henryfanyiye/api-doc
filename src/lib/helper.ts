@@ -1,42 +1,11 @@
-/**
- * 逐层解析postman.json，提取api
- */
-export function filterRequest(dir: Array<string>, data: Array<any>, item: Array<any>) {
-  for (const i in item) {
-    if (item[i].request) {
-      data.push(Object.assign({ dir }, this.mappingFiled(item[i])));
-    }
-    if (item[i].item) {
-      const dirN = [...dir];
-      dirN.push(item[i].name);
-      this.filterRequest(dirN, data, item[i].item);
-    }
-  }
-  return data;
-}
-
-/**
- * format filed
- */
-export function mappingFiled(data) {
-  const { name, request } = data;
-  const { method, header, url, body } = request;
-  const { path, variable, query } = url;
-  return {
-    name,
-    method,
-    api: this.spliceApi(path),
-    header,
-    path: variable ? variable : null,
-    query: query ? query : null,
-    body: body ? body[body.mode] : null,
-  };
-}
+import { join } from 'path';
+import fs from 'fs';
+import { Parser } from 'json2csv';
 
 /**
  * 拼接请求路径
  */
-export function spliceApi(path: any) {
+export function spliceApi(path: any): string {
   let api = '';
   for (const i in path) {
     api += `/${path[i]}`;
@@ -44,41 +13,52 @@ export function spliceApi(path: any) {
   return api;
 }
 
-export function jsonToMd(data: any): string {
-  const { name, method, api, header, path, query, body } = this.mappingFiled(data);
-  const tmp1 = `# ${method} ${api}\n\n**Description** : ${name}\n\n`;
+/**
+ * format filed
+ */
+export function mappingFiled(data): any {
+  const { name, request } = data;
+  const { method, header, url, body } = request;
+  const { path, variable, query } = url;
+  return {
+    title: name,
+    method,
+    url: this.spliceApi(path),
+    header: header ? JSON.stringify(header) : null,
+    path: variable ? JSON.stringify(variable) : null,
+    query: query ? JSON.stringify(query) : null,
+    body_type: body ? body.mode : null,
+    body: body ? body[body.mode] : null,
+  };
+}
 
-  let tmp2 = '### Request\n\n' +
-    '| Name             | Required | Type   | Data Type |    Demo     | Description |\n' +
-    '|------------------|----------|--------|-----------|-------------|-------------|\n';
-
-  const request = { header, path, query };
-  for (let i in request) {
-    if (request[i] && request[i].length > 0) {
-      for (let j in request[i]) {
-        tmp2 += `|${request[i][j].key}|true|${i}|${request[i][j].type}|${request[i][j].value || 'string'}|${request[i][j].description || ''}|\n`;
+export function filterApi(data: any, api): any {
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].item) {
+      api.push({ name: data[i].name });
+      this.filterApi(data[i].item, api);
+    }
+    if (data[i].request) {
+      const raw = data[i].request.url.raw.split('/');
+      let str = '';
+      for (let j = 1; j < raw.length; j++) {
+        str += '/' + raw[j];
       }
+      if (str.indexOf('?') > -1) str = str.split('?')[0];
+      api.push({ name: data[i].name, api: str });
     }
   }
+  return api;
+}
 
-  const tmp3 = '\n**Request sample**\n\n' +
-    '```json\n' +
-    `${body}\n` +
-    '```\n\n' +
-    '### Response\n\n' +
-    '**Success response**\n\n' +
-    '```json\n{}\n```\n\n' +
-    '| Name | Data Type | Description |\n' +
-    '|------|-----------|-------------|\n' +
-    '|      |           |             |\n' +
-    '\n**Failed response**\n\n' +
-    '```json\n{}\n```\n\n' +
-    '**Code**\n\n' +
-    '| Code | Message |\n' +
-    '|------|---------|\n' +
-    '|      |         |\n' +
-    '\n**Sequence**\n\n' +
-    '```plantuml\nA -> B : \n```';
+export async function createCsv(title: string, fields: any[], data: any) {
+  const json2csvParser = new Parser({ fields });
+  const csv = json2csvParser.parse(data);
 
-  return tmp1 + tmp2 + tmp3;
+  const dirPath = join(__dirname, '../../files');
+  const filePath = dirPath + `/${title}`;
+  await fs.promises.mkdir(dirPath, { recursive: true });
+  await fs.writeFileSync(filePath, csv);
+
+  return filePath;
 }
