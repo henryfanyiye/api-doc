@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { Injectable } from '@nestjs/common';
 import { InsertResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,19 +35,37 @@ export class ProjectService {
       input.password = password;
     }
     const { raw } = await this.projectRepository.insert(Object.assign({ is_delete: false }, input));
-    await this.userProjectRepository.insert({ member_id, project_id: raw, creator: true });
+    await this.userProjectRepository.insert({ member_id, project_id: raw, creator: true, is_delete: false });
     return raw;
   }
 
   async queryProject(project_id: number): Promise<any> {
-    const res = await this.projectRepository.findOne(project_id, {
-      where: [{ is_delete: 0 }],
-      select: ['project_name', 'description', 'is_private'],
-    });
-    if (res) {
-      return res;
+    // 查询项目下未删除目录
+    let res = await this.catalogRepository.query('SELECT catalog_id as id,catalog_name as name,parentId,level FROM project_catalog WHERE is_delete=0 AND project_id=:project_id', [project_id]);
+    if (res.length > 0) {
+      let data = [];
+      // 查询目录下未删除api
+      await Promise.all(
+        res.map(async item => {
+          const items = await this.itemRepository.query('SELECT item_id AS id,title AS name FROM project_item WHERE is_delete=0 AND catalog_id=:catalog_id', [item.id]);
+          item['items'] = items;
+          data.push(item);
+          return;
+        }),
+      );
+      // 多层目录嵌套
+      data.forEach(item1 => {
+        const result = data.filter(item2 => item2.parentId === item1.id);
+        item1.items = item1.items.concat(result);
+      });
+      // 过滤非一级目录
+      data = data.filter(item => item.parentId === 0);
+      // 查询项目未归入目录的api
+      const items = await this.itemRepository.query('SELECT item_id AS id,title AS name FROM project_item WHERE is_delete=0 AND catalog_id=0 AND project_id=:project_id', [project_id]);
+      data = data.concat(items);
+      return data;
     } else {
-      throw new CustomErrorException(CustomError.InvalidProjectId);
+      return [];
     }
   }
 
@@ -62,10 +81,10 @@ export class ProjectService {
   }
 
   async deleteProject(project_id: number): Promise<any> {
-    await this.itemRepository.delete({ project_id });
-    await this.userProjectRepository.delete({ project_id });
-    await this.catalogRepository.delete({ project_id });
-    await this.projectRepository.delete({ project_id });
+    await this.userProjectRepository.update({ project_id }, { is_delete: true });
+    await this.projectRepository.update(project_id, { is_delete: true });
+    await this.catalogRepository.update({ project_id }, { is_delete: true });
+    await this.itemRepository.update({ project_id }, { is_delete: true });
     return;
   }
 
@@ -106,8 +125,8 @@ export class ProjectService {
   }
 
   async deleteCatalog(catalog_id: number): Promise<void> {
-    const items = await this.itemRepository.find({ catalog_id });
     await this.catalogRepository.update(catalog_id, { is_delete: true });
+    await this.itemRepository.update({ catalog_id }, { is_delete: true });
     return;
   }
 

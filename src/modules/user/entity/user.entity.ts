@@ -21,6 +21,9 @@ export class User {
   @Column('text', { unique: true })
   email: string;
 
+  @Column('text', { nullable: true })
+  avatar: string;
+
   @Column('text')
   create_time: string;
 

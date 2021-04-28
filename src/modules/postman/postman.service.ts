@@ -14,7 +14,7 @@ export class PostmanService {
   ) {
   }
 
-  async importCollection(member_id: string, filePath: string): Promise<void> {
+  async importCollection(member_id: string, filePath: string): Promise<any> {
     const contents: string = await fs.readFileSync(
       filePath,
       {
@@ -22,35 +22,38 @@ export class PostmanService {
       },
     );
     const { info, item } = JSON.parse(contents);
-    const { password } = await this.userService.detail(member_id);
     const project_id = await this.projectService.createProject(member_id, {
       project_name: info.name,
       description: null,
-      password,
+      password: null,
       is_private: true,
       is_delete: false,
       creator: true,
     });
     await this.batchInsert(project_id, item);
-    return;
+    return project_id;
   }
 
   async batchInsert(project_id: number, data: any, parentId = 0, level = 1): Promise<void> {
     for (const i in data) {
       const { name, item, request } = data[i];
       if (item) {
-        const { raw } = await this.projectService.createCatalog({
+        const { catalog_id } = await this.projectService.createCatalog({
           catalog_name: name,
           project_id,
           parentId,
           level,
           is_delete: false,
         });
-        await this.batchInsert(project_id, item, raw, level++);
+        await this.batchInsert(project_id, item, catalog_id, level + 1);
       }
       if (request) {
         const requestMap = mappingFiled(data[i]);
-        await this.projectService.createItem(Object.assign(requestMap, { project_id, catalog_id: parentId }));
+        await this.projectService.createItem(Object.assign(requestMap, {
+          project_id,
+          catalog_id: parentId,
+          is_delete: false,
+        }));
       }
     }
     return;

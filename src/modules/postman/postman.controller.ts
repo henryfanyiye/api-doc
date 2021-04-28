@@ -25,9 +25,9 @@ export class PostmanController {
     @UploadedFile() file,
   ) {
     const { path } = file;
-    await this.postmanService.importCollection(user.member_id, path);
+    const id = await this.postmanService.importCollection(user.member_id, path);
     await fs.unlinkSync(path);
-    return;
+    return id;
   }
 
   @Public()

@@ -76,7 +76,7 @@ export class UserService {
         'project.project_id as projectId',
         'project.project_name as projectName',
         'project.description as description',
-        'user_project.creator as creator',
+        'project.is_private as private',
       ])
       .where('user_project.member_id = :member_id and project.is_delete = :is_delete', {
         member_id,
@@ -84,7 +84,7 @@ export class UserService {
       })
       .getRawMany();
     for (let i in res) {
-      res[i].creator = res[i].creator === '0' ? false : true;
+      res[i].private = res[i].private === '0' ? false : true;
     }
     return res;
   }
