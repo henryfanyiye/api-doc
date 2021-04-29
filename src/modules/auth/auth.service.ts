@@ -38,4 +38,10 @@ export class AuthService {
 
     return { accessToken, expiresIn };
   }
+
+  async removeToken(token: string) {
+    token = token.replace('Bearer ', '');
+    await this.redis.expire(token, 0);
+    return;
+  }
 }

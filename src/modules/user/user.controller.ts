@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { hash } from 'typeorm/util/StringUtils';
 
 import { UserService } from './user.service';
@@ -34,6 +34,13 @@ export class UserController {
     const user = await this.userService.login(loginDto);
     const res = await this.authService.generateToken({ member_id: user.member_id });
     return res;
+  }
+
+  @Get('logout')
+  async logout(
+    @Headers('Authorization') token: string,
+  ) {
+    return await this.authService.removeToken(token);
   }
 
   @Get('detail')
