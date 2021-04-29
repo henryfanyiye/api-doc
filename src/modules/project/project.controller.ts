@@ -31,6 +31,13 @@ export class ProjectController {
     return await this.projectService.queryProject(id);
   }
 
+  @Get('/:id')
+  async queryProjectInfo(
+    @Param('id') id: string,
+  ) {
+    return await this.projectService.queryProjectInfo(Number(id));
+  }
+
   @Post('project/update/:id')
   async updateProject(
     @Param('id') id: number,
@@ -104,12 +111,5 @@ export class ProjectController {
     @Param('id') id: string,
   ) {
     return this.projectService.deleteItem(Number(id));
-  }
-
-  @Get('/:id')
-  async queryProjectInfo(
-    @Param('id') id: string,
-  ) {
-    return await this.projectService.queryProjectInfo(Number(id));
   }
 }
