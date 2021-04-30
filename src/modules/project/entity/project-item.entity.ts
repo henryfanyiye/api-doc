@@ -30,6 +30,9 @@ export class ProjectItem {
   @Column('text', { nullable: true })
   body: string;
 
+  @Column('text', { nullable: true })
+  markdown: string;
+
   @Column('integer')
   project_id: number;
 
