@@ -96,9 +96,10 @@ export function makeMarkdown(title: string, method: string, url: string, header 
     '|500|500|Internet Server Error|\n\n';
 
   // Sequence
-  content += '```mermaid\n' +
+  content +='**Sequence Diagram：**\n\n' +
+    '```mermaid\n' +
     'sequenceDiagram\n' +
-    'A ->> B : Demo\n' +
+    '    A ->> B : Demo\n' +
     '```';
 
   return content;
