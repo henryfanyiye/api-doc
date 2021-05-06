@@ -43,8 +43,7 @@ export function makeMarkdown(title: string, method: string, url: string, header 
   let content = `# ${title}\n\n` +
     `**Method：** \`${method}\`\n\n` +
     `**Path：** \`${url}\`\n\n` +
-    `**Description：**\n\n` +
-    `**Request Parameters：**\n\n`;
+    `**Description：**\n\n`;
 
   let reqParams = '';
   // Header
@@ -70,22 +69,23 @@ export function makeMarkdown(title: string, method: string, url: string, header 
 
   // Request Params
   if (reqParams) {
-    content += '|Name|Type|Data Type|Description|Required|\n' +
-      '|--|--|--|--|--|--|\n' +
-      reqParams;
+    content += `**Request Parameters：**\n\n` +
+      '|Name|Type|Data Type|Description|Required|\n' +
+      '|--|--|--|--|--|\n' +
+      `${reqParams}\n`;
   }
 
   // Request Body
   if (body) {
     content += '**Request Sample：**\n\n' +
-      '```\n' +
+      '```json\n' +
       `${body}\n` +
       '```\n';
   }
 
   // Response
   content += '**Response Sample：**\n\n' +
-    '```\n' +
+    '```json\n' +
     '{ success: true}\n' +
     '```\n';
 
@@ -96,7 +96,7 @@ export function makeMarkdown(title: string, method: string, url: string, header 
     '|500|500|Internet Server Error|\n\n';
 
   // Sequence
-  content +='**Sequence Diagram：**\n\n' +
+  content += '**Sequence Diagram：**\n\n' +
     '```mermaid\n' +
     'sequenceDiagram\n' +
     '    A ->> B : Demo\n' +
