@@ -1,12 +1,15 @@
 import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
-export class CreateProjectItemDto {
+export class UpdateProjectItemDto {
+  @IsOptional()
   @IsString()
   title: string;
 
+  @IsOptional()
   @IsString()
   url: string;
 
+  @IsOptional()
   @IsString()
   method: string;
 
@@ -34,9 +37,11 @@ export class CreateProjectItemDto {
   @IsString()
   markdown: string;
 
+  @IsOptional()
   @IsInt()
   project_id: number;
 
+  @IsOptional()
   @IsInt()
   catalog_id: number;
 

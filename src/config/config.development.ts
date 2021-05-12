@@ -17,6 +17,6 @@ export default () => ({
   },
   auth: {
     tokenKey: 'token:member:',
-    expiresIn: 7200,
+    expiresIn: 24 * 3600,
   },
 })

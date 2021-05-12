@@ -14,6 +14,7 @@ import { CustomErrorException } from '../../lib/error/custom-error.exception';
 import { CustomError } from '../../lib/error/custom.error';
 import { UserService } from '../user/user.service';
 import { hash } from 'typeorm/util/StringUtils';
+import { UpdateProjectItemDto } from './dto/update-project-item.dto';
 
 @Injectable()
 export class ProjectService {
@@ -144,7 +145,7 @@ export class ProjectService {
     }
   }
 
-  async updateItem(id: number, input: CreateProjectItemDto): Promise<any> {
+  async updateItem(id: number, input: UpdateProjectItemDto): Promise<any> {
     return await this.itemRepository.update(id, input);
   }
 

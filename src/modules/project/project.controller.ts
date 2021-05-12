@@ -6,6 +6,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { ProjectService } from './project.service';
+import { UpdateProjectItemDto } from './dto/update-project-item.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -31,7 +32,7 @@ export class ProjectController {
     return await this.projectService.queryProject(id);
   }
 
-  @Get('/:id')
+  @Get(':id')
   async queryProjectInfo(
     @Param('id') id: string,
   ) {
@@ -100,10 +101,10 @@ export class ProjectController {
 
   @Post('item/update/:id')
   async updateItem(
-    @Param('id') id: string,
-    @Body() input: CreateProjectItemDto,
+    @Param('id') id: number,
+    @Body() input: UpdateProjectItemDto,
   ) {
-    return await this.projectService.updateItem(Number(id), input);
+    return await this.projectService.updateItem(id, input);
   }
 
   @Delete('item/:id')
