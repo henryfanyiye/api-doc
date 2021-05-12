@@ -37,3 +37,5 @@ lerna-debug.log*
 fileUpload
 
 package-lock.json
+
+sqlite/
