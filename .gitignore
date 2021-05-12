@@ -25,6 +25,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+/.gradle
 
 # IDE - VSCode
 .vscode/*
@@ -34,3 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 fileUpload
+
+package-lock.json
+
+sqlite/

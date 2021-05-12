@@ -1,6 +1,6 @@
 export default () => ({
-  hostname: '127.0.0.1',
-  port: 3000,
+  hostname: 'beimoting.fun',
+  port: 4000,
   sqlite: {
     type: 'sqlite',
     entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
@@ -12,11 +12,11 @@ export default () => ({
     config: {
       host: '127.0.0.1',
       port: 6379,
-      password: '',
+      password: 'Fyy@0423',
     },
   },
   auth: {
     tokenKey: 'token:member:',
-    expiresIn: 24 * 3600,
+    expiresIn: 7200,
   },
 })

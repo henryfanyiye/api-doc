@@ -1,56 +1,61 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import * as fs from 'fs';
+import { Controller, Get, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import fs from 'fs';
+import { Response } from 'express';
+import { join } from 'path';
+import { ConfigService } from '@nestjs/config';
+
+import { PostmanService } from './postman.service';
+import { User } from '../auth/decorator/user.decorator';
+import { Public } from '../auth/decorator/auth.decorator';
+import { createCsv } from '../../lib/helper';
 
 @Controller('postman')
 export class PostmanController {
-  @Post('jsonToMd')
-  async jsonToMd(@Body() data: any) {
-    const contents: string = await fs.readFileSync(
-      './fileUpload/Github.postman_collection.json',
-      {
-        encoding: 'utf8',
-      },
-    );
-    const { info, item } = JSON.parse(contents);
-    const { name } = info;
-    const req = filterRequest([name], [], item);
-    return req;
+  constructor(
+    private readonly postmanService: PostmanService,
+    private readonly config: ConfigService,
+  ) {
   }
-}
 
-function filterRequest(dir: Array<string>, data: Array<any>, item: Array<any>) {
-  for (const i in item) {
-    if (item[i].request) {
-      data.push(Object.assign({ dir }, mappingFiled(item[i])));
-    }
-    if (item[i].item) {
-      const dirN = [...dir];
-      dirN.push(item[i].name);
-      filterRequest(dirN, data, item[i].item);
-    }
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @User() user: any,
+    @UploadedFile() file,
+  ) {
+    const { path } = file;
+    const id = await this.postmanService.importCollection(user.member_id, path);
+    await fs.unlinkSync(path);
+    return id;
   }
-  return data;
-}
 
-function mappingFiled(data) {
-  const { name, request } = data;
-  const { method, header, url, body } = request;
-  const { path, variable, query } = url;
-  return {
-    name,
-    method,
-    api: spliceApi(path),
-    header,
-    path: variable ? variable : null,
-    query: query ? query : null,
-    body: body ? body[body.mode] : null,
-  };
-}
-
-function spliceApi(path: any) {
-  let api = '';
-  for (const i in path) {
-    api += `/${path[i]}`;
+  @Public()
+  @Post('getApiList')
+  @UseInterceptors(FileInterceptor('file'))
+  async getApiList(
+    @UploadedFile() file,
+  ) {
+    const { path, filename } = file;
+    const data = await this.postmanService.getApiList(path);
+    const title = filename.replace('.json', '.csv');
+    const fields = [
+      { label: 'Name', value: 'name' },
+      { label: 'API', value: 'api' },
+    ];
+    await createCsv(title, fields, data);
+    return `http://${this.config.get('hostname')}:${this.config.get('port')}/api/postman/download/${title}`;
   }
-  return api;
+
+  @Public()
+  @Get('download/:file')
+  getFile(@Res() res: Response, @Param() params) {
+    const path = join(__dirname, '../../files', params.file);
+    res.download(path, err => {
+      if (err) {
+        res.json({ code: 404, message: '文件不存在' });
+      }
+      res.end();
+    });
+  }
 }
