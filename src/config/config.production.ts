@@ -1,6 +1,6 @@
 export default () => ({
   hostname: 'beimoting.fun',
-  port: 4000,
+  port: 3000,
   sqlite: {
     type: 'sqlite',
     entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
@@ -10,13 +10,13 @@ export default () => ({
   },
   ioredis: {
     config: {
-      host: '127.0.0.1',
+      host: 'beimoting.fun',
       port: 6379,
       password: 'Fyy@0423',
     },
   },
   auth: {
     tokenKey: 'token:member:',
-    expiresIn: 7200,
+    expiresIn: 24 * 3600,
   },
 })
