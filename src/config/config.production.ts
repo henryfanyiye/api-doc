@@ -10,9 +10,9 @@ export default () => ({
   },
   ioredis: {
     config: {
-      host: 'beimoting.fun',
-      port: 6379,
-      password: 'Fyy@0423',
+      host: process.env.REDIS_HOST || 'beimoting.fun',
+      port: process.env.REDIS_PORT || 6379,
+      password: process.env.REDIS_PWD || 'Fyy@0423',
     },
   },
   auth: {
