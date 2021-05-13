@@ -1,6 +1,6 @@
 export default () => ({
   hostname: 'beimoting.fun',
-  port: 3000,
+  port: process.env.PORT || 3000,
   sqlite: {
     type: 'sqlite',
     entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],
