@@ -47,7 +47,6 @@ export class UserController {
   async detail(
     @User() user: any,
   ) {
-    console.log(user);
     const res = await this.userService.detail(user.member_id);
     if (res) {
       delete res.password;

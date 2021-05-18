@@ -30,7 +30,7 @@ export function mappingFiled(data): any {
     query: query ? JSON.stringify(query) : null,
     body_type: body ? body.mode : null,
     body: body ? body[body.mode] : null,
-    markdown: null,
+    markdown: null
   };
 
   fileds.markdown = makeMarkdown(fileds.title, fileds.method, fileds.url, header, variable, query, fileds.body_type, fileds.body);
@@ -134,4 +134,9 @@ export async function createCsv(title: string, fields: any[], data: any) {
   await fs.writeFileSync(filePath, csv);
 
   return filePath;
+}
+
+export function copyjson(data) {
+  const res = JSON.stringify(data);
+  return JSON.parse(res);
 }

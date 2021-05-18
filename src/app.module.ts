@@ -16,6 +16,7 @@ import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { ProjectModule } from './modules/project/project.module';
 import { TeamModule } from './modules/team/team.module';
 import { RedisModule } from '@svtslv/nestjs-ioredis';
+import { EnvironmentModule } from './modules/environment/environment.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { RedisModule } from '@svtslv/nestjs-ioredis';
     UserModule,
     ProjectModule,
     TeamModule,
+    EnvironmentModule,
   ],
   providers: [
     {
