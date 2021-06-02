@@ -27,26 +27,22 @@ export class EnvironmentController {
     return res;
   }
 
-  @Post('create')
+  @Post('edit')
   async create(
     @User() user: any,
     @Body() data: EnvironmentDto
   ) {
-    return this.envService.create(user.member_id, data);
-  }
-
-  @Post('update')
-  async update(
-    @Body() data: EnvironmentDto
-  ) {
-    await this.envService.update(data);
-    return;
+    if (data.id) {
+      return this.envService.update(data);
+    } else {
+      return this.envService.create(user.member_id, data);
+    }
   }
 
   @Delete(':id')
   async delete(
     @Param('id') id: number
   ) {
-
+    return await this.envService.delete(id);
   }
 }

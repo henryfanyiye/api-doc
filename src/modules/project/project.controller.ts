@@ -7,19 +7,20 @@ import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
 import { CreateProjectItemDto } from './dto/create-project-item.dto';
 import { ProjectService } from './project.service';
 import { UpdateProjectItemDto } from './dto/update-project-item.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Controller('project')
 export class ProjectController {
 
   constructor(
-    private readonly projectService: ProjectService,
+    private readonly projectService: ProjectService
   ) {
   }
 
   @Post('project/add')
   async createProject(
     @User() user: any,
-    @Body() input: CreateProjectDto,
+    @Body() input: CreateProjectDto
   ) {
     const pid = await this.projectService.createProject(user.member_id, input);
     return { pid };
@@ -27,29 +28,30 @@ export class ProjectController {
 
   @Get('project/:id')
   async queryProject(
-    @Param('id') id: number,
+    @Param('id') id: number
   ) {
     return await this.projectService.queryProject(id);
   }
 
   @Get(':id')
   async queryProjectInfo(
-    @Param('id') id: string,
+    @User() user: any,
+    @Param('id') id: number
   ) {
-    return await this.projectService.queryProjectInfo(Number(id));
+    return await this.projectService.queryProjectInfo(user.member_id, id);
   }
 
   @Post('project/update/:id')
   async updateProject(
     @Param('id') id: number,
-    @Body() input: CreateProjectDto,
+    @Body() input: UpdateProjectDto
   ) {
     return await this.projectService.updateProject(id, input);
   }
 
   @Delete('project/:id')
   async deleteProject(
-    @Param('id') id: number,
+    @Param('id') id: number
   ) {
     return await this.projectService.deleteProject(id);
   }
@@ -57,7 +59,7 @@ export class ProjectController {
   @Post('project/transfer')
   async transferProject(
     @User() user: any,
-    @Body() data: any,
+    @Body() data: any
   ) {
     const { project_id, username, password } = data;
     return await this.projectService.transferProject(user.member_id, password, project_id, username);
@@ -65,7 +67,7 @@ export class ProjectController {
 
   @Post('catalog/add')
   async createCatalog(
-    @Body() input: CreateProjectCatalogDto,
+    @Body() input: CreateProjectCatalogDto
   ) {
     return await this.projectService.createCatalog(input);
   }
@@ -73,28 +75,28 @@ export class ProjectController {
   @Post('catalog/update/:id')
   async updateCatalog(
     @Param('id') id: number,
-    @Body() input: CreateProjectCatalogDto,
+    @Body() input: CreateProjectCatalogDto
   ) {
     return this.projectService.updateCatalog(id, input);
   }
 
   @Delete('catalog/:id')
   async deleteCatalog(
-    @Param('id') id: number,
+    @Param('id') id: number
   ) {
     return this.projectService.deleteCatalog(id);
   }
 
   @Post('item/add')
   async createItem(
-    @Body() input: CreateProjectItemDto,
+    @Body() input: CreateProjectItemDto
   ) {
     return await this.projectService.createItem(input);
   }
 
   @Get('item/:id')
   async queryItem(
-    @Param('id') id: string,
+    @Param('id') id: string
   ) {
     return this.projectService.queryItem(Number(id));
   }
@@ -102,14 +104,14 @@ export class ProjectController {
   @Post('item/update/:id')
   async updateItem(
     @Param('id') id: number,
-    @Body() input: UpdateProjectItemDto,
+    @Body() input: UpdateProjectItemDto
   ) {
     return await this.projectService.updateItem(id, input);
   }
 
   @Delete('item/:id')
   async deleteItem(
-    @Param('id') id: string,
+    @Param('id') id: string
   ) {
     return this.projectService.deleteItem(Number(id));
   }

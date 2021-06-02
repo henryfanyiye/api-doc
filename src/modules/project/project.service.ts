@@ -15,6 +15,7 @@ import { CustomError } from '../../lib/error/custom.error';
 import { UserService } from '../user/user.service';
 import { hash } from 'typeorm/util/StringUtils';
 import { UpdateProjectItemDto } from './dto/update-project-item.dto';
+import { UpdateProjectDto } from './dto/update-project.dto';
 
 @Injectable()
 export class ProjectService {
@@ -24,7 +25,7 @@ export class ProjectService {
     @InjectRepository(ProjectCatalog, 'sqlite') private readonly catalogRepository: Repository<ProjectCatalog>,
     @InjectRepository(ProjectItem, 'sqlite') private readonly itemRepository: Repository<ProjectItem>,
     @InjectRepository(UserProject, 'sqlite') private readonly userProjectRepository: Repository<UserProject>,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {
   }
 
@@ -53,7 +54,7 @@ export class ProjectService {
           item['type'] = 'catalog';
           data.push(item);
           return;
-        }),
+        })
       );
       // 多层目录嵌套
       data.forEach(item1 => {
@@ -71,7 +72,7 @@ export class ProjectService {
     }
   }
 
-  async updateProject(project_id: number, input: CreateProjectDto): Promise<any> {
+  async updateProject(project_id: number, input: UpdateProjectDto): Promise<any> {
     if (input.password) {
       input.password = hash(input.password);
     }
@@ -153,16 +154,8 @@ export class ProjectService {
     return await this.itemRepository.delete(id);
   }
 
-  async queryProjectInfo(project_id: number) {
-    const { project_name: projectName } = await this.projectRepository.findOne({ project_id });
-    const catalogs = await this.catalogRepository.find({ project_id });
-    const res = await Promise.all(
-      catalogs.map(async item => {
-        const { catalog_id, catalog_name: catalogName, parentId } = item;
-        const res = await this.itemRepository.find({ catalog_id: item.catalog_id });
-        return { catalog_id, catalogName, parentId, items: res };
-      }),
-    );
-    return { project_id, projectName, catalogs: res };
+  async queryProjectInfo(member_id: string, project_id: number) {
+    const res = await this.userProjectRepository.findOne({ member_id, project_id });
+    if (res) return await this.projectRepository.findOne({ project_id }, { select: ['project_name', 'is_private', 'description'] });
   }
 }
