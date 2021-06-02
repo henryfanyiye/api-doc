@@ -12,23 +12,27 @@ import { User } from '../auth/decorator/user.decorator';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {
   }
 
   @Public()
   @Post('register')
   async register(
-    @Body() user: RegisterDto,
+    @Body() user: RegisterDto
   ) {
-    await this.userService.register(user);
-    return;
+    if (user.password !== user.checkPassword) {
+
+    } else {
+      await this.userService.register(user);
+      return;
+    }
   }
 
   @Public()
   @Post('login')
   async login(
-    @Body() loginDto: LoginDto,
+    @Body() loginDto: LoginDto
   ) {
     loginDto.password = hash(loginDto.password);
     const user = await this.userService.login(loginDto);
@@ -38,14 +42,14 @@ export class UserController {
 
   @Get('logout')
   async logout(
-    @Headers('Authorization') token: string,
+    @Headers('Authorization') token: string
   ) {
     return await this.authService.removeToken(token);
   }
 
   @Get('detail')
   async detail(
-    @User() user: any,
+    @User() user: any
   ) {
     const res = await this.userService.detail(user.member_id);
     if (res) {
@@ -59,7 +63,7 @@ export class UserController {
   @Get('project/list')
   async queryProjectList(
     @User() user: any,
-    @Query('is_delete') id_delete?: boolean,
+    @Query('is_delete') id_delete?: boolean
   ) {
     return this.userService.queryProjectList(user.member_id, id_delete);
   }
@@ -67,7 +71,7 @@ export class UserController {
   @Post('password/check')
   async checkPassword(
     @User() user: any,
-    @Body() data: any,
+    @Body() data: any
   ) {
     const { password } = data;
     return this.userService.checkPassword(user.member_id, password);
