@@ -21,7 +21,7 @@ export class UserService {
     @InjectRepository(UserProject, 'sqlite')
     private readonly userProjectRepository: Repository<UserProject>,
     @InjectRepository(Project, 'sqlite')
-    private readonly projectRepository: Repository<Project>,
+    private readonly projectRepository: Repository<Project>
   ) {
   }
 
@@ -34,7 +34,7 @@ export class UserService {
       return await this.userRepository.insert(Object.assign({
         member_id: 'M_' + await nanoid(),
         create_time,
-        update_time: create_time,
+        update_time: create_time
       }, user));
     } catch (e) {
       throw new BadRequestException(e.message);
@@ -76,15 +76,15 @@ export class UserService {
         'project.project_id as projectId',
         'project.project_name as projectName',
         'project.description as description',
-        'project.is_private as private',
+        'user_project.creator as creator'
       ])
       .where('user_project.member_id = :member_id and project.is_delete = :is_delete', {
         member_id,
-        is_delete: is_delete ? true : false,
+        is_delete: is_delete ? true : false
       })
       .getRawMany();
     for (let i in res) {
-      res[i].private = res[i].private === '0' ? false : true;
+      res[i].creator = res[i].creator === '0' ? false : true;
     }
     return res;
   }

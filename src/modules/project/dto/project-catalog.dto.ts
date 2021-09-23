@@ -1,6 +1,6 @@
 import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
-export class CreateProjectCatalogDto {
+export class ProjectCatalogDto {
 
   @IsString()
   catalog_name: string;
@@ -15,6 +15,10 @@ export class CreateProjectCatalogDto {
 
   @IsInt()
   project_id: number;
+
+  @IsOptional()
+  @IsInt()
+  sortNum: number;
 
   @IsOptional()
   @IsBoolean()

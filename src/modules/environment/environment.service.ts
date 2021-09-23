@@ -47,4 +47,10 @@ export class EnvironmentService {
     res.env_value = JSON.stringify(res.env_value);
     return await this.userEnvironment.update(data.id, res);
   }
+
+  async delete(id: number): Promise<any> {
+    await this.userEnvironment.delete({ env_id: id });
+    await this.environment.delete(id);
+    return;
+  }
 }

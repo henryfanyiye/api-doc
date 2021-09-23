@@ -86,7 +86,7 @@ export function makeMarkdown(title: string, method: string, url: string, header 
   // Response
   content += '**Response Sample：**\n\n' +
     '```json\n' +
-    '{ success: true}\n' +
+    '{ "success": true }\n' +
     '```\n';
 
   // Error

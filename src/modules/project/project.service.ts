@@ -6,15 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectCatalog } from './entity/project-catalog.entity';
 import { ProjectItem } from './entity/project-item.entity';
-import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
-import { CreateProjectItemDto } from './dto/create-project-item.dto';
+import { ProjectCatalogDto } from './dto/project-catalog.dto';
 import { Project } from './entity/project.entity';
 import { UserProject } from '../user/entity/user-project.entity';
 import { CustomErrorException } from '../../lib/error/custom-error.exception';
 import { CustomError } from '../../lib/error/custom.error';
 import { UserService } from '../user/user.service';
 import { hash } from 'typeorm/util/StringUtils';
-import { UpdateProjectItemDto } from './dto/update-project-item.dto';
+import { ProjectItemDto } from './dto/project-item.dto';
 
 @Injectable()
 export class ProjectService {
@@ -29,12 +28,6 @@ export class ProjectService {
   }
 
   async createProject(member_id: string, input: CreateProjectDto): Promise<any> {
-    if (input.password) {
-      input.password = hash(input.password);
-    } else {
-      const { password } = await this.userService.detail(member_id);
-      input.password = password;
-    }
     const { raw } = await this.projectRepository.insert(Object.assign({ is_delete: false }, input));
     await this.userProjectRepository.insert({ member_id, project_id: raw, creator: true, is_delete: false });
     return raw;
@@ -42,13 +35,13 @@ export class ProjectService {
 
   async queryProject(project_id: number): Promise<any> {
     // 查询项目下未删除目录
-    let res = await this.catalogRepository.query('SELECT catalog_id as id,catalog_name as name,parentId,level,\'catalog\' AS type FROM project_catalog WHERE is_delete=0 AND project_id=:project_id', [project_id]);
+    let res = await this.catalogRepository.query('SELECT catalog_id as id,catalog_name as name,parentId,level,\'catalog\' AS type FROM project_catalog WHERE is_delete=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
     if (res.length > 0) {
       let data = [];
       // 查询目录下未删除api
       await Promise.all(
         res.map(async item => {
-          const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=:catalog_id', [item.id]);
+          const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=:catalog_id ORDER BY sortNum ASC', [item.id]);
           item['items'] = items;
           item['type'] = 'catalog';
           data.push(item);
@@ -63,7 +56,7 @@ export class ProjectService {
       // 过滤非一级目录
       data = data.filter(item => item.parentId === 0);
       // 查询项目未归入目录的api
-      const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=0 AND project_id=:project_id', [project_id]);
+      const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
       data = data.concat(items);
       return data;
     } else {
@@ -72,9 +65,6 @@ export class ProjectService {
   }
 
   async updateProject(project_id: number, input: CreateProjectDto): Promise<any> {
-    if (input.password) {
-      input.password = hash(input.password);
-    }
     await this.projectRepository.update({ project_id }, input);
     if (input.creator) {
       await this.userProjectRepository.update({ project_id }, input);
@@ -116,12 +106,12 @@ export class ProjectService {
     }
   }
 
-  async createCatalog(input: CreateProjectCatalogDto): Promise<any> {
+  async createCatalog(input: ProjectCatalogDto): Promise<any> {
     const { raw } = await this.catalogRepository.insert(input);
     return { catalog_id: raw };
   }
 
-  async updateCatalog(catalog_id: number, input: CreateProjectCatalogDto): Promise<void> {
+  async updateCatalog(catalog_id: number, input: ProjectCatalogDto): Promise<void> {
     await this.catalogRepository.update({ catalog_id }, input);
     return;
   }
@@ -132,7 +122,7 @@ export class ProjectService {
     return;
   }
 
-  async createItem(input: CreateProjectItemDto): Promise<InsertResult> {
+  async createItem(input: ProjectCatalogDto): Promise<InsertResult> {
     return await this.itemRepository.insert(input);
   }
 
@@ -145,7 +135,7 @@ export class ProjectService {
     }
   }
 
-  async updateItem(id: number, input: UpdateProjectItemDto): Promise<any> {
+  async updateItem(id: number, input: ProjectItemDto): Promise<any> {
     return await this.itemRepository.update(id, input);
   }
 

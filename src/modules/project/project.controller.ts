@@ -1,12 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { hash } from 'typeorm/util/StringUtils';
 
 import { User } from '../auth/decorator/user.decorator';
 import { CreateProjectDto } from './dto/create-project.dto';
-import { CreateProjectCatalogDto } from './dto/create-project-catalog.dto';
-import { CreateProjectItemDto } from './dto/create-project-item.dto';
+import { ProjectCatalogDto } from './dto/project-catalog.dto';
 import { ProjectService } from './project.service';
-import { UpdateProjectItemDto } from './dto/update-project-item.dto';
+import { ProjectItemDto } from './dto/project-item.dto';
 
 @Controller('project')
 export class ProjectController {
@@ -65,7 +63,7 @@ export class ProjectController {
 
   @Post('catalog/add')
   async createCatalog(
-    @Body() input: CreateProjectCatalogDto,
+    @Body() input: ProjectCatalogDto,
   ) {
     return await this.projectService.createCatalog(input);
   }
@@ -73,7 +71,7 @@ export class ProjectController {
   @Post('catalog/update/:id')
   async updateCatalog(
     @Param('id') id: number,
-    @Body() input: CreateProjectCatalogDto,
+    @Body() input: ProjectCatalogDto,
   ) {
     return this.projectService.updateCatalog(id, input);
   }
@@ -87,7 +85,7 @@ export class ProjectController {
 
   @Post('item/add')
   async createItem(
-    @Body() input: CreateProjectItemDto,
+    @Body() input: ProjectCatalogDto,
   ) {
     return await this.projectService.createItem(input);
   }
@@ -102,7 +100,7 @@ export class ProjectController {
   @Post('item/update/:id')
   async updateItem(
     @Param('id') id: number,
-    @Body() input: UpdateProjectItemDto,
+    @Body() input: ProjectItemDto,
   ) {
     return await this.projectService.updateItem(id, input);
   }

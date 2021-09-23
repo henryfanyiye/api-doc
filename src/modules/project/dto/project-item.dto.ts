@@ -1,6 +1,6 @@
 import { IsBoolean, IsInt, IsOptional, IsString } from 'class-validator';
 
-export class UpdateProjectItemDto {
+export class ProjectItemDto {
   @IsOptional()
   @IsString()
   title: string;

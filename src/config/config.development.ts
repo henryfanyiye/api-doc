@@ -1,6 +1,6 @@
 export default () => ({
   hostname: '127.0.0.1',
-  port: 3000,
+  port: 4000,
   sqlite: {
     type: 'sqlite',
     entities: [__dirname + '/../modules/**/entity/*.entity{.ts,.js}'],

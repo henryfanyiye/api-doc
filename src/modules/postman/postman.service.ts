@@ -10,7 +10,7 @@ export class PostmanService {
 
   constructor(
     private readonly projectService: ProjectService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {
   }
 
@@ -18,24 +18,22 @@ export class PostmanService {
     const contents: string = await fs.readFileSync(
       filePath,
       {
-        encoding: 'utf8',
-      },
+        encoding: 'utf8'
+      }
     );
     const { info, item } = JSON.parse(contents);
     const project_id = await this.projectService.createProject(member_id, {
       project_name: info.name,
       description: null,
-      password: null,
-      is_private: true,
       is_delete: false,
-      creator: true,
+      creator: true
     });
     await this.batchInsert(project_id, item);
     return project_id;
   }
 
   async batchInsert(project_id: number, data: any, parentId = 0, level = 1): Promise<void> {
-    for (const i in data) {
+    for (let i = 0, len = data.length; i < len; i++) {
       const { name, item, request } = data[i];
       if (item) {
         const { catalog_id } = await this.projectService.createCatalog({
@@ -43,7 +41,8 @@ export class PostmanService {
           project_id,
           parentId,
           level,
-          is_delete: false,
+          sortNum: i,
+          is_delete: false
         });
         await this.batchInsert(project_id, item, catalog_id, level + 1);
       }
@@ -52,7 +51,8 @@ export class PostmanService {
         await this.projectService.createItem(Object.assign(requestMap, {
           project_id,
           catalog_id: parentId,
-          is_delete: false,
+          sortNum: i,
+          is_delete: false
         }));
       }
     }
@@ -63,8 +63,8 @@ export class PostmanService {
     const contents: string = await fs.readFileSync(
       filePath,
       {
-        encoding: 'utf8',
-      },
+        encoding: 'utf8'
+      }
     );
     const { item } = JSON.parse(contents);
     return filterApi(item, []);

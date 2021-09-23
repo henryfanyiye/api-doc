@@ -39,6 +39,9 @@ export class ProjectItem {
   @Column('integer')
   catalog_id: number;
 
+  @Column('integer')
+  sortNum: number;
+
   @Column({ type: 'blob', transformer: new NumToBoolTransformer(), comment: '0 | 1' })
   is_delete: boolean;
 
