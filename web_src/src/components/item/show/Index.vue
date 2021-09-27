@@ -5,6 +5,7 @@
     <!-- 展示常规项目 -->
     <ShowRegularItem
       :projectId='projectId'
+      :itemId='itemId'
       :projectInfo='projectInfo'
       :search_item='search_item'
       :keyword='keyword'
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       projectId: '',
+      itemId: '',
       projectInfo: '',
       keyword: '',
     };
@@ -35,7 +37,7 @@ export default {
   },
   mounted() {
     this.get_item_menu();
-    this.$store.dispatch('changeOpenCatId', 0);
+    this.itemId = this.$route.params.itemId;
   },
   methods: {
     // 获取菜单
@@ -45,14 +47,13 @@ export default {
       }
       const that = this;
       const loading = that.$loading();
-      that.projectId = this.$route.params.projectId;
-      const name = this.$route.query.name;
+      that.projectId = that.$route.params.projectId;
       this.axios.get(`/api/project/project/${that.projectId}`).then(res => {
         loading.close();
         if (res.code === 0) {
-          that.projectInfo = res.data;
-          that.$store.dispatch('changeItemInfo', res.data);
-          document.title = name + '--ShowDoc';
+          that.projectInfo = res.data.data;
+          that.$store.dispatch('changeItemInfo', res.data.data);
+          document.title = res.data.name + '--ShowDoc';
         } else {
           that.$alert(res.msg);
         }

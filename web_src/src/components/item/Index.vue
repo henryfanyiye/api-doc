@@ -92,7 +92,7 @@
             >
               <router-link
                 class='thumbnail item-thumbnail'
-                :to="{name:'ItemShow',params:{projectId:item.projectId},query:{name:item.projectName}}"
+                :to="'/'+item.projectId"
                 :title='item.description'
               >
                 <!-- 自己创建的话显示项目设置按钮 -->

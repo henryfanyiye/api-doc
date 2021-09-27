@@ -12,8 +12,7 @@
         background-color='#fafafa'
         text-color
         active-text-color='#008cff'
-        :default-active='projectInfo.default_page_id'
-        :default-openeds='openeds'
+        :default-active='itemId ? itemId.toString() : null'
       >
         <!-- 一级目录 -->
         <template
@@ -60,6 +59,7 @@ export default {
     projectInfo: '',
     search_item: '',
     keyword: '',
+    itemId: '',
   },
   data() {
     return {
@@ -72,6 +72,28 @@ export default {
   },
   components: {
     LeftMenuSub,
+  },
+  mounted() {
+    const that = this;
+    if (that.itemId) {
+      that.select_menu(that.itemId);
+      // 延迟把左侧栏滚动到默认展开的那个页面
+      setTimeout(() => {
+        const element = document.querySelector(
+          '#left_page_' + that.itemId,
+        );
+        element.scrollIntoView();
+      }, 1000);
+    }
+    // 如果是大屏幕且存在目录，则把侧边栏调大
+    if (
+      window.screen.width >= 1600 &&
+      this.menu &&
+      this.menu.length > 0
+    ) {
+      this.asideWidth = '300px';
+      this.menuMarginLeft = 'menu-margin-left2';
+    }
   },
   methods: {
     // 选中菜单的回调
@@ -90,16 +112,10 @@ export default {
     },
 
     // 改变url
-    change_url(page_id) {
-      if (
-        page_id > 0 &&
-        (page_id == this.$route.query.page_id ||
-          page_id == this.$route.params.page_id)
-      ) {
-        return;
-      }
+    change_url(item_id) {
       this.$router.replace({
-        path: '/' + this.projectId + '/' + page_id,
+        path: '/' + this.projectId + '/' + item_id,
+      }).catch(() => {
       });
     },
 
@@ -109,46 +125,6 @@ export default {
     randerUrl(page_id) {
       return '#/' + this.projectId + '/' + page_id;
     },
-  },
-  mounted() {
-    // const projectInfo = that.projectInfo
-    // 默认展开页面
-    // if (projectInfo.default_page_id > 0) {
-    //   that.select_menu(projectInfo.default_page_id)
-    //   if (projectInfo.default_cat_id4) {
-    //     that.openeds = [
-    //       projectInfo.default_cat_id4,
-    //       projectInfo.default_cat_id3,
-    //       projectInfo.default_cat_id2,
-    //       projectInfo.default_page_id
-    //     ]
-    //   } else if (projectInfo.default_cat_id3) {
-    //     that.openeds = [
-    //       projectInfo.default_cat_id3,
-    //       projectInfo.default_cat_id2,
-    //       projectInfo.default_page_id
-    //     ]
-    //   } else if (projectInfo.default_cat_id2) {
-    //     that.openeds = [projectInfo.default_cat_id2, projectInfo.default_page_id]
-    //   }
-    //   // 延迟把左侧栏滚动到默认展开的那个页面
-    //   setTimeout(() => {
-    //     const element = document.querySelector(
-    //         '#left_page_' + projectInfo.default_page_id
-    //     )
-    //     element.scrollIntoView()
-    //   }, 1000)
-    // }
-
-    // 如果是大屏幕且存在目录，则把侧边栏调大
-    if (
-      window.screen.width >= 1600 &&
-      this.menu &&
-      this.menu.length > 0
-    ) {
-      this.asideWidth = '300px';
-      this.menuMarginLeft = 'menu-margin-left2';
-    }
   },
 };
 </script>

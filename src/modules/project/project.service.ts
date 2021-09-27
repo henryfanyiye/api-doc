@@ -23,7 +23,7 @@ export class ProjectService {
     @InjectRepository(ProjectCatalog, 'sqlite') private readonly catalogRepository: Repository<ProjectCatalog>,
     @InjectRepository(ProjectItem, 'sqlite') private readonly itemRepository: Repository<ProjectItem>,
     @InjectRepository(UserProject, 'sqlite') private readonly userProjectRepository: Repository<UserProject>,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {
   }
 
@@ -34,34 +34,37 @@ export class ProjectService {
   }
 
   async queryProject(project_id: number): Promise<any> {
-    // 查询项目下未删除目录
-    let res = await this.catalogRepository.query('SELECT catalog_id as id,catalog_name as name,parentId,level,\'catalog\' AS type FROM project_catalog WHERE is_delete=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
-    if (res.length > 0) {
-      let data = [];
-      // 查询目录下未删除api
-      await Promise.all(
-        res.map(async item => {
-          const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=:catalog_id ORDER BY sortNum ASC', [item.id]);
-          item['items'] = items;
-          item['type'] = 'catalog';
-          data.push(item);
-          return;
-        }),
-      );
-      // 多层目录嵌套
-      data.forEach(item1 => {
-        const result = data.filter(item2 => item2.parentId === item1.id);
-        item1.items = item1.items.concat(result);
-      });
-      // 过滤非一级目录
-      data = data.filter(item => item.parentId === 0);
-      // 查询项目未归入目录的api
-      const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
-      data = data.concat(items);
-      return data;
-    } else {
-      return [];
+    const project = await this.projectRepository.query('SELECT project_id as id,project_name as name,description as desc FROM project WHERE project_id=:project_id', [project_id]);
+    if (project.length == 0) {
+      return {};
     }
+    // 查询项目下未删除目录
+    const res = await this.catalogRepository.query('SELECT catalog_id as id,catalog_name as name,parentId,level,\'catalog\' AS type FROM project_catalog WHERE is_delete=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
+    if (res.length == 0) {
+      return {};
+    }
+    let data = [];
+    // 查询目录下未删除api
+    await Promise.all(
+      res.map(async item => {
+        const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=:catalog_id ORDER BY sortNum ASC', [item.id]);
+        item['items'] = items;
+        item['type'] = 'catalog';
+        data.push(item);
+        return;
+      })
+    );
+    // 多层目录嵌套
+    data.forEach(item1 => {
+      const result = data.filter(item2 => item2.parentId === item1.id);
+      item1.items = item1.items.concat(result);
+    });
+    // 过滤非一级目录
+    data = data.filter(item => item.parentId === 0);
+    // 查询项目未归入目录的api
+    const items = await this.itemRepository.query('SELECT item_id AS id,title AS name,\'api\' AS type FROM project_item WHERE is_delete=0 AND catalog_id=0 AND project_id=:project_id ORDER BY sortNum ASC', [project_id]);
+    data = data.concat(items);
+    return Object.assign(project[0], { data });
   }
 
   async updateProject(project_id: number, input: CreateProjectDto): Promise<any> {
@@ -151,7 +154,7 @@ export class ProjectService {
         const { catalog_id, catalog_name: catalogName, parentId } = item;
         const res = await this.itemRepository.find({ catalog_id: item.catalog_id });
         return { catalog_id, catalogName, parentId, items: res };
-      }),
+      })
     );
     return { project_id, projectName, catalogs: res };
   }

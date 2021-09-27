@@ -49,7 +49,7 @@ export default {
   name: 'LeftMenuSub',
   props: {
     catalog: [],
-    projectId: {},
+    projectId: '',
   },
   data() {
     return {};
@@ -57,12 +57,11 @@ export default {
   components: {},
   methods: {
     randerUrl(page_id) {
-      if (!this.projectId) return;
       return '#/' + this.projectId + '/' + page_id;
     },
   },
   mounted() {
-    // console.log(this.catalog);
+    // console.log(this.projectId);
   },
 };
 </script>

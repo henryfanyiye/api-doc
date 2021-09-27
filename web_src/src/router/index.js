@@ -150,7 +150,7 @@ export default new Router({
       component: ItemShow
     },
     {
-      path: '/:projectId/:page_id(\\d+)',
+      path: '/:projectId/:itemId(\\d+)',
       name: 'ItemShow',
       component: ItemShow
     }

@@ -9,6 +9,8 @@
           ref='leftMenu'
           :get_page_content='get_page_content'
           :keyword='keyword'
+          :projectId='projectId'
+          :itemId='itemId'
           :projectInfo='projectInfo'
           :search_item='search_item'
           v-if='projectInfo'
@@ -23,7 +25,6 @@
         </div>
 
         <OpBar
-          :page_id='page_id'
           :item_id='projectInfo.item_id'
           :projectInfo='projectInfo'
           :page_info='page_info'
@@ -47,6 +48,8 @@ import { rederPageContent } from '@/models/page';
 
 export default {
   props: {
+    projectId: '',
+    itemId: '',
     projectInfo: '',
     search_item: '',
     keyword: '',
@@ -54,14 +57,12 @@ export default {
   data() {
     return {
       content: '###正在加载...',
-      page_id: '',
       page_title: '',
       dialogVisible: false,
       share_item_link: '',
       qr_item_link: '',
       page_info: '',
       copyText: '',
-      attachment_count: '',
       fullPage: false,
       showfullPageBtn: false,
       showToc: true,
@@ -78,13 +79,10 @@ export default {
   },
   methods: {
     // 获取页面内容
-    get_page_content(page_id) {
-      if (page_id <= 0) {
-        return;
-      }
+    get_page_content(itemId) {
       this.adaptScreen();
       const that = this;
-      this.axios.get(`/api/project/item/${page_id}`).then(res => {
+      this.axios.get(`/api/project/item/${itemId}`).then(res => {
         // loading.close();
         if (res.code === 0) {
           that.content = rederPageContent(
@@ -93,16 +91,6 @@ export default {
           that.$store.dispatch('changeOpenCatId', res.data.item_id);
           that.page_title = res.data.title;
           that.page_info = res.data;
-          that.attachment_count = res.data.attachment_count > 0 ? res.data.attachment_count : '';
-          // 切换变量让它重新加载、渲染子组件
-          that.page_id = 0;
-          that.projectInfo.default_page_id = page_id;
-          that.$nextTick(() => {
-            that.page_id = page_id;
-            // 页面回到顶部
-            document.body.scrollTop = document.documentElement.scrollTop = 0;
-            document.title = that.page_title + '--ShowDoc';
-          });
         } else {
           that.$alert(res.msg);
         }
@@ -117,8 +105,6 @@ export default {
       doc_container.style.padding = '5px';
       const header = document.getElementById('header');
       header.style.height = '10px';
-      const docTitle = document.getElementById('doc-title-box');
-      docTitle.style.marginTop = '40px';
       this.showToc = false;
     },
     // 根据屏幕宽度进行响应。应对小屏幕pc设备(如笔记本)的访问
@@ -129,8 +115,6 @@ export default {
       doc_container.style.padding = '20px';
       const header = document.getElementById('header');
       header.style.height = '20px';
-      const docTitle = document.getElementById('doc-title-box');
-      docTitle.style.marginTop = '30px';
     },
     // 响应式
     adaptScreen() {
@@ -164,10 +148,10 @@ export default {
       } else {
         this.adaptToMobile();
         // 切换变量让它重新加载、渲染子组件
-        const page_id = this.page_id;
-        this.page_id = 0;
+        const itemId = this.itemId;
+        this.itemId = 0;
         this.$nextTick(() => {
-          this.page_id = page_id;
+          this.itemId = itemId;
           setTimeout(() => {
             $('.editormd-html-preview').css('font-size', '16px');
           }, 200);
@@ -254,16 +238,6 @@ export default {
   width: 95%;
   margin: 0 auto;
   background-color: #fff;
-}
-
-.doc-title-box {
-  height: auto;
-  width: auto;
-  /*border-bottom: 1px solid #ebebeb;*/
-  /*padding-bottom: 10px;*/
-  width: 100%;
-  /*margin: 10px auto;*/
-  text-align: center;
 }
 
 pre ol {
